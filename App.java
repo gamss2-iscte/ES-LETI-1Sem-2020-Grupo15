@@ -34,6 +34,7 @@ import org.apache.poi.xssf.usermodel.*;
 			private ArrayList<Regra> regras = new ArrayList<Regra>();
 			private String[] columnNames2;
 			private ArrayList<String> data = new ArrayList<String>();
+			private JTextField text = new JTextField("");
 			
 			public App() throws InvalidFormatException, IOException {
 				frame = new JFrame ("Excel Reader");
@@ -56,9 +57,7 @@ import org.apache.poi.xssf.usermodel.*;
 				}
 				return numberOfCells;
 			}
-			
- 			
- 			
+
 			public void importarExcel(String path) throws InvalidFormatException, IOException {
 				
 				Workbook workbook = WorkbookFactory.create(new File(path));
@@ -96,7 +95,6 @@ import org.apache.poi.xssf.usermodel.*;
 			
 			public void showExcel() {
 				
-				
 				Object[] linha = new Object[columnNames2.length];
 				int auxiliar=-1;
 				
@@ -111,62 +109,246 @@ import org.apache.poi.xssf.usermodel.*;
 				}
 				
 			}
+
+			public void clearTable() {
+				
+				
+				int rowCount = model.getRowCount();
+				//Remove rows one by one from the end of the table
+				for (int i = rowCount - 1; i >= 0; i--) {
+				    model.removeRow(i);
+				}
+				
+			}
 			
+			public void removeFromData(int a, int referencia) {
+				
+				if (a == 4) { //LOC
+					
+					data.remove(referencia - 4);
+					data.remove(referencia - 3);
+					data.remove(referencia - 2);
+					data.remove(referencia - 1);
+					data.remove(referencia);
+					data.remove(referencia + 1);
+					data.remove(referencia + 2);
+					data.remove(referencia + 3);
+					data.remove(referencia + 5);
+					data.remove(referencia + 6);
+					data.remove(referencia + 7);
+				}
+			}
+					
+			public void addToData(ArrayList<String> objetivo, ArrayList<String> original, int g) {
+				
+				objetivo.add(original.get(g));
+				objetivo.add(original.get(g + 1));
+				objetivo.add(original.get(g + 2));
+				objetivo.add(original.get(g + 3));
+				objetivo.add(original.get(g + 4));
+				objetivo.add(original.get(g + 5));
+				objetivo.add(original.get(g + 6));
+				objetivo.add(original.get(g + 7));
+				objetivo.add(original.get(g + 8));
+				objetivo.add(original.get(g + 9));
+				objetivo.add(original.get(g + 10));
+				objetivo.add(original.get(g + 11));
+				
+			}
+				
 			public void updateData(ArrayList<Regra> regras) {
 				
+				clearTable();
 				
 				ArrayList<String> data2 = new ArrayList<String>();
-				System.out.println("vou dar update");
-				//System.out.println(regras.size());
+				System.out.println("Vou dar update");
+				System.out.println("Neste momento existem " + regras.size() + " regras");
 				
-				for(int i =0; i < regras.size(); i++) {
+				for(int i = 0; i < regras.size(); i++) {
 					
 					Regra aux = regras.get(i);
 					String metrica = aux.getMetrica().toString();
 					String operator = aux.getOperator().toString();
 					
-					System.out.println(metrica);
-					System.out.println(operator);
 					System.out.println("#########"+aux.getDouble());
-				//	System.out.println(aux.getMetrica().toString());
 					
-					if(metrica.equals("LOC")) {
+					
+					
+					if(metrica.equals("LOC")) {  //metric is LOC
 						
-						System.out.println("a métrica é LOC");
-						
-						if(operator.equals("<")) {
+							if(operator.equals("<")) { //operator is <
 							
-							System.out.println("o operador é <");
+								for(int g = 0; g < data.size(); g+=columnNames2.length) {
+								
+									//System.out.println("Célula do Excel: " + data.get(g+4));
+									
+									if(Integer.parseInt(data.get(g+4)) < aux.getDouble()) {
+										
+										//System.out.println("cheguei");
+										addToData(data2, data, g);		
+										//data2.add
+										//removeFromData(4, g+4);
+										//data.set(g+4, "eliminado");
+										
+									}
+								}
+							}
+							
+							if (operator.equals(">")) { //operator is >
+								
+								for(int g = 0; g < data.size(); g+=columnNames2.length) {
+									
+									if(Integer.parseInt(data.get(g+4)) > aux.getDouble()) {
+										
+										addToData(data2, data, g);		
+										
+									}
+								}
+							}
+							if (operator.equals("=")) { //operator is =
+								
+								for(int g = 0; g < data.size(); g+=columnNames2.length) {
+									
+									if(Integer.parseInt(data.get(g+4)) == aux.getDouble()) {
+										
+										addToData(data2, data, g);		
+										
+									}
+								}
+							}
+					}
+					
+					
+					
+					else if(aux.getMetrica().equals("CYCLO")) { //metric is CYCLO
+						
+
+							if(operator.equals("<")) { //operator is <
+							
+								for(int g = 0; g < data.size(); g+=columnNames2.length) {
+								
+									if(Integer.parseInt(data.get(g+5)) < aux.getDouble()) {
+										
+										addToData(data2, data, g);		
+										
+									}
+								}
+							}
+							
+							if (operator.equals(">")) { //operator is >
+								
+								for(int g = 0; g < data.size(); g+=columnNames2.length) {
+									
+									if(Integer.parseInt(data.get(g+5)) > aux.getDouble()) {
+										
+										addToData(data2, data, g);		
+										
+									}
+								}
+							}
+							if (operator.equals("=")) { //operator is =
+								
+								for(int g = 0; g < data.size(); g+=columnNames2.length) {
+									
+									if(Integer.parseInt(data.get(g+5)) == aux.getDouble()) {
+										
+										addToData(data2, data, g);		
+										
+									}
+								}
+							}
+					}
+					
+					
+					
+					
+					else if(aux.getMetrica().equals("ATFD")) { //metric is ATFD
+						
+
+						if(operator.equals("<")) { //operator is <
 						
 							for(int g = 0; g < data.size(); g+=columnNames2.length) {
-							
-								System.out.println("Célula do Excel: " + data.get(g+4));
-								if(Integer.parseInt(data.get(g+4)) > aux.getDouble()) {
+								
+								if(Integer.parseInt(data.get(g+6)) < aux.getDouble()) {
 									
-									//data.remo
-									System.out.println("cheguei");
-									//data2.add
-									data.set(g+4, "eliminado");
+									addToData(data2, data, g);		
+									
+								}
+							}
+						}
+						
+						if (operator.equals(">")) { //operator is >
+							
+							for(int g = 0; g < data.size(); g+=columnNames2.length) {
+								
+								if(Integer.parseInt(data.get(g+6)) > aux.getDouble()) {
+									
+									addToData(data2, data, g);		
+									
+								}
+							}
+						}
+						if (operator.equals("=")) { //operator is =
+							
+							for(int g = 0; g < data.size(); g+=columnNames2.length) {
+								
+								if(Integer.parseInt(data.get(g+6)) == aux.getDouble()) {
+									
+									addToData(data2, data, g);		
 									
 								}
 							}
 						}
 					}
-					if(aux.getMetrica().equals("CYCLO")) {
+					
+					
+					
+					
+					else if(aux.getMetrica().equals("LAA")) { //metric is LAA
 						
+						if(operator.equals("<")) { //operator is <
+							
+							for(int g = 0; g < data.size(); g+=columnNames2.length) {
+								
+								if((int) Math.round(Double.parseDouble(data.get(g+7))) < aux.getDouble()) {
+									
+									addToData(data2, data, g);		
+									
+								}
+							}
+						}
 						
+						if (operator.equals(">")) { //operator is >
+							
+							for(int g = 0; g < data.size(); g+=columnNames2.length) {
+								
+								if((int) Math.round(Double.parseDouble(data.get(g+7))) > aux.getDouble()) {
+									
+									addToData(data2, data, g);		
+									
+								}
+							}
+						}
+						if (operator.equals("=")) { //operator is =
+							
+							for(int g = 0; g < data.size(); g+=columnNames2.length) {
+								
+								if( (int) Math.round (Double.parseDouble(data.get(g+7)) ) == aux.getDouble()) {
+									
+								//	System.out.println(g);
+									
+									addToData(data2, data, g);		
+									
+								}
+							}
+						}
 					}
 					
-					if(aux.getMetrica().equals("ATFD")) {
-						
-					}
 					
-					if(aux.getMetrica().equals("LAA")) {
-						
-						
-					}
+				//	data=data2;
 				}
-				//data=data2;
+				data=data2;
+				//data2.clear();
 			
 			}
 			
@@ -209,18 +391,38 @@ import org.apache.poi.xssf.usermodel.*;
 				JButton definirRegras = new JButton("Define Rule");
 				JButton verRegras = new JButton("Show Rules");
 				JButton exit = new JButton ("Exit");
+				JButton showRules = new JButton("Ver Regras na consola");
 				hi.add(verExcel);
 				hi.add(definirRegras);
 				hi.add(verRegras);
 				hi.add(exit);
+				hi.add(showRules);
 				
+				
+				showRules.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+					
+						for(int i = 0; i < regras.size(); i++) {
+							
+							System.out.println("##########");
+							System.out.println(regras.get(i).getMetrica());
+							System.out.println(regras.get(i).getOperator());
+							System.out.println(regras.get(i).getDouble());
+						}
+						
+					}
+					
+					
+					
+				});
 			
 				verExcel.addActionListener(new ActionListener() {
 
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						
-					//	model.addRow(columnNames2);
 						showExcel();
 							
 					}
@@ -270,8 +472,8 @@ import org.apache.poi.xssf.usermodel.*;
 						
 						
 						//JTextField - Numero
-						JTextField text = new JTextField("10");
-						numero = text.getText();
+						//JTextField text = new JTextField("");
+						
 						//regra.setOperator(numero);
 						
 						
@@ -327,27 +529,23 @@ import org.apache.poi.xssf.usermodel.*;
 	    						}
 	    						
 	    						//check numero
-	    						if(isFloat(numero)==false){
-	    							erro.setText("Verifique o numero escrito");
-	    							erroDialog.setVisible(true);
-	    						}else {
-	    							System.out.println(numero);
-	    							double doub = Integer.parseInt(numero);
-	    							regra.setDouble(doub);
+//	    							if(isFloat(numero)==false){
+//	    								erro.setText("Verifique o numero escrito");
+//	    								erroDialog.setVisible(true);
+//	    							}else {
+//	    								System.out.println(numero);
+	    								//numero = text.getText();
+	    								double doub = Integer.parseInt(text.getText());
+	    								regra.setDouble(doub);
 	    							
-	    						}
+	    					//		}
 	    						
 	    						regras.add(regra);
+	    						System.out.println("Adicionei uma regra");
 	    						updateData(regras);
+	    						System.out.println("Atualizei o data");
 	    						showExcel();
-	    						
-	    						
-	    						//FAZER O SCAN DO EXCEL
-	    						
-	    						
-	    						
-	    						
-	    						
+	    							
 	    					}
 	    					
 	    				});
@@ -356,20 +554,14 @@ import org.apache.poi.xssf.usermodel.*;
 	    					
 	    					@Override
 	    					public void actionPerformed(ActionEvent e) {
-	    						//frame2.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+	    					//	frame2.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+	    						frame2.dispose();
 	    						
 	    					}
 	    					
 	    				});
-						
-
-						
-						
-					}
 					
-					
-					
-					
+					}	
 				});
 				
 				
@@ -377,11 +569,16 @@ import org.apache.poi.xssf.usermodel.*;
 					
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+						
+						
+						//clearTable();
+						//frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+						frame.dispose();
 						
 					}
 					
 				});
+
 				
 				verRegras.addActionListener(new ActionListener() {
 
