@@ -27,6 +27,7 @@ import org.apache.poi.xssf.usermodel.*;
 	{
 			private JFrame frame;
 			private JFrame frame2;
+			private JFrame frame3;
 			private JLabel erro;
 			private JDialog erroDialog;
 			private static final String path = "/Users/goncalosantos/Downloads/Defeitos.xlsx";
@@ -585,45 +586,51 @@ import org.apache.poi.xssf.usermodel.*;
 
 				
 				verRegras.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						
-						 JFrame frame = new JFrame("Show Rules");
-					     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-					     DefaultTableModel dm = new DefaultTableModel();
-					     dm.setDataVector(new Object[][]{{"Delete", "","","",""},
-					                    {"Delete", "","","",""}}, new Object[]{"","Name", "Metric", "Operator", "Number"});
-
-					     
-					     for (int i = 0; i < regras.size(); i++) {
-					    	 
-					    	 Regra auxiliar = regras.get(i);
-					    	// Object[] toAdd = 
-					    	 
-					    	// dm.addRow(rowData);
-					     }
-					     JTable table = new JTable(dm);
-					     table.getColumn("").setCellRenderer(new ButtonRenderer());
-					     table.getColumn("").setCellEditor(new ButtonEditor(new JCheckBox()));
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
 
 
-					     JScrollPane scroll = new JScrollPane(table);
+                        frame3 = new JFrame("Choose Rule");
+                        frame3.setSize(1000, 700);
+                        frame3.setLocation(100, 100);
+                        frame3.setLayout(new BorderLayout());
+                        frame3.setVisible(true);
 
-					     table.setPreferredScrollableViewportSize(table.getPreferredSize());
-					     table.getColumnModel().getColumn(0).setPreferredWidth(100);
 
-					     
-					     frame.add(scroll);
-					     frame.pack();
-					     frame.setVisible(true);
-						
-					}
-					
-					
-					
-				});
+
+                        JPanel buttonPane= new JPanel();
+                        JPanel fieldsPanel= new JPanel();
+                        JLabel rule=new JLabel("Rule");
+                        JLabel ruleNumber= new JLabel("Rule Number");
+
+
+                        String [] options= {"Choose an option", "iPlasma", "PMD"};
+                        JComboBox cb= new JComboBox(options);
+
+
+                        JTextField text = new JTextField("");
+
+                        JButton s= new JButton("OK");
+                        JButton s2= new JButton("Cancel");
+
+                        fieldsPanel.setLayout(new BoxLayout(fieldsPanel, BoxLayout.PAGE_AXIS));
+                        buttonPane.setLayout(new FlowLayout());
+
+                        fieldsPanel.add(rule);
+                        fieldsPanel.add(cb);
+                        fieldsPanel.add(ruleNumber);
+                        fieldsPanel.add(text);
+                        buttonPane.add(s);
+                        buttonPane.add(s2);
+
+                        frame3.add(fieldsPanel, BorderLayout.PAGE_START);
+                        frame3.add(buttonPane, BorderLayout.PAGE_END);
+                        frame3.pack();
+                        frame3.setVisible(true);
+                     }
+
+                });
+
 				
 			}
 			
