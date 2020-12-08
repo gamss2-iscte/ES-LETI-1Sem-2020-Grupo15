@@ -28,6 +28,7 @@ import org.apache.poi.xssf.usermodel.*;
 			private JFrame frame;
 			private JFrame frame2;
 			private JFrame frame3;
+			private JFrame frameTeste;
 			private JLabel erro;
 			private JDialog erroDialog;
 			private static final String path = "/Users/goncalosantos/Downloads/Defeitos.xlsx";
@@ -357,8 +358,7 @@ import org.apache.poi.xssf.usermodel.*;
 				//data2.clear();
 			
 			}
-			
-			
+		
 			public void addContent() throws InvalidFormatException, IOException {
 				
 				frame.setSize(1400, 700);
@@ -393,15 +393,23 @@ import org.apache.poi.xssf.usermodel.*;
 				frame.add(hi, BorderLayout.SOUTH);
 				hi.setLayout(new FlowLayout());
 				JButton verExcel = new JButton("Show Excel");
-				JButton definirRegras = new JButton("Define Rule");
-				JButton verRegras = new JButton("Show Rules");
+				JButton definirRegra = new JButton("Create Rule");
+				JButton escolherRegra = new JButton("Choose Rule");
 				JButton exit = new JButton ("Exit");
-				JButton showRules = new JButton("Ver Regras na consola");
+				JButton showRules = new JButton("Existing Rules");
+				JButton deleteRule = new JButton("Delete Rule");
+				JButton resetExcel = new JButton("Reset Excel");
+				JButton dataSize = new JButton("Data Size");
+				
 				hi.add(verExcel);
-				hi.add(definirRegras);
-				hi.add(verRegras);
-				hi.add(exit);
+				hi.add(definirRegra);
+				hi.add(escolherRegra);	
 				hi.add(showRules);
+				hi.add(resetExcel);
+				hi.add(dataSize);
+				hi.add(deleteRule);
+				hi.add(exit);
+				
 				
 				
 				showRules.addActionListener(new ActionListener() {
@@ -409,6 +417,9 @@ import org.apache.poi.xssf.usermodel.*;
 					@Override
 					public void actionPerformed(ActionEvent e) {
 					
+						if(regras.isEmpty())
+							System.out.println("Não há regras criadas");
+						
 						for(int i = 0; i < regras.size(); i++) {
 							
 							System.out.println("REGRA Nº " + i + ":");
@@ -437,7 +448,7 @@ import org.apache.poi.xssf.usermodel.*;
 				});
 				
 				
-				definirRegras.addActionListener(new ActionListener() {
+				definirRegra.addActionListener(new ActionListener() {
 					
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -550,6 +561,7 @@ import org.apache.poi.xssf.usermodel.*;
 	    						updateData(regras);
 	    						//System.out.println("Atualizei o data");
 	    						showExcel();
+	    						frame2.dispose();
 	    							
 	    					}
 	    					
@@ -585,8 +597,9 @@ import org.apache.poi.xssf.usermodel.*;
 				});
 
 				
-				verRegras.addActionListener(new ActionListener() {
-                    @Override
+				escolherRegra.addActionListener(new ActionListener() {
+                   
+					@Override
                     public void actionPerformed(ActionEvent e) {
 
 
@@ -632,6 +645,81 @@ import org.apache.poi.xssf.usermodel.*;
                 });
 
 				
+				deleteRule.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						
+						  frameTeste= new JFrame("TESTE");
+	                      frameTeste.setSize(800, 700);
+	                      frameTeste.setLocation(100, 100);
+	                      frameTeste.setLayout(new BorderLayout());
+	                      frameTeste.setVisible(true);
+
+	                      JPanel buttonPane= new JPanel();
+	                      JPanel fieldsPanel= new JPanel();
+	                      JLabel ruleNumber= new JLabel("Rule Number");
+
+	                      JTextField text = new JTextField("");
+
+	                      JButton s = new JButton("Delete");
+
+
+	                      fieldsPanel.setLayout(new BoxLayout(fieldsPanel, BoxLayout.PAGE_AXIS));
+	                      buttonPane.setLayout(new FlowLayout());
+
+	                      fieldsPanel.add(ruleNumber);
+	                      fieldsPanel.add(text);
+	                      buttonPane.add(s);
+	
+	                      frameTeste.add(fieldsPanel, BorderLayout.PAGE_START);
+	                      frameTeste.add(buttonPane, BorderLayout.PAGE_END);
+	                      frameTeste.pack();
+	                      frameTeste.setVisible(true);
+						
+						
+					}
+					
+					
+				});
+			
+				
+				resetExcel.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						
+						data.clear();
+						
+						while (model.getRowCount()>0) {
+				             model.removeRow(0);
+						}
+						
+						try {
+							importarExcel(path);
+						} catch (InvalidFormatException | IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+						showExcel();
+						
+					}
+					
+					
+				});
+			
+				
+				dataSize.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						
+						System.out.println("Tamanho atual do data: " + data.size()/12);
+					}
+					
+					
+				});
 			}
 			
 			
