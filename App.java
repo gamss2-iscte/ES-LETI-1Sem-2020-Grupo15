@@ -161,18 +161,18 @@ import org.apache.poi.xssf.usermodel.*;
 				clearTable();
 				
 				ArrayList<String> data2 = new ArrayList<String>();
-				System.out.println("Vou dar update");
+				//System.out.println("Vou dar update");
 				System.out.println("Neste momento existem " + regras.size() + " regras");
+				
+				//System.out.println("########## " + data2.size());
 				
 				for(int i = 0; i < regras.size(); i++) {
 					
 					Regra aux = regras.get(i);
 					String metrica = aux.getMetrica().toString();
 					String operator = aux.getOperator().toString();
-					
-					System.out.println("#########"+aux.getDouble());
-					
-					
+					data2.clear();
+					//System.out.println("#########"+aux.getDouble());
 					
 					if(metrica.equals("LOC")) {  //metric is LOC
 						
@@ -216,6 +216,7 @@ import org.apache.poi.xssf.usermodel.*;
 									}
 								}
 							}
+					//	this.data = data2;
 					}
 					
 					
@@ -257,6 +258,7 @@ import org.apache.poi.xssf.usermodel.*;
 									}
 								}
 							}
+					//	this.data = data2;
 					}
 					
 					
@@ -299,6 +301,7 @@ import org.apache.poi.xssf.usermodel.*;
 								}
 							}
 						}
+						//this.data = data2;
 					}
 					
 					
@@ -334,20 +337,22 @@ import org.apache.poi.xssf.usermodel.*;
 							for(int g = 0; g < data.size(); g+=columnNames2.length) {
 								
 								if( (int) Math.round (Double.parseDouble(data.get(g+7)) ) == aux.getDouble()) {
-									
-								//	System.out.println(g);
-									
+							
 									addToData(data2, data, g);		
 									
 								}
 							}
 						}
+						//this.data = data2;
 					}
 					
 					
 				//	data=data2;
 				}
+				
 				data=data2;
+				System.out.println("Tamanho do data: " + data.size() / 12 + " linhas");
+				//System.out.println("Tamanho do data2: " + data2.size() / 12 + " linhas");
 				//data2.clear();
 			
 			}
@@ -369,7 +374,6 @@ import org.apache.poi.xssf.usermodel.*;
 				
 				
 				//Tabela Excel
-				
 				importarExcel(this.path);
 				JScrollPane scroll;
 				model = new DefaultTableModel();
@@ -406,7 +410,7 @@ import org.apache.poi.xssf.usermodel.*;
 					
 						for(int i = 0; i < regras.size(); i++) {
 							
-							System.out.println("##########");
+							System.out.println("REGRA Nº " + i + ":");
 							System.out.println(regras.get(i).getMetrica());
 							System.out.println(regras.get(i).getOperator());
 							System.out.println(regras.get(i).getDouble());
@@ -418,18 +422,18 @@ import org.apache.poi.xssf.usermodel.*;
 					
 				});
 			
+				
 				verExcel.addActionListener(new ActionListener() {
 
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						
+						clearTable();
 						showExcel();
 							
 					}
 				
 				});
-	
-				
 				
 				
 				definirRegras.addActionListener(new ActionListener() {
@@ -541,9 +545,9 @@ import org.apache.poi.xssf.usermodel.*;
 	    					//		}
 	    						
 	    						regras.add(regra);
-	    						System.out.println("Adicionei uma regra");
+	    						//System.out.println("Adicionei uma regra");
 	    						updateData(regras);
-	    						System.out.println("Atualizei o data");
+	    						//System.out.println("Atualizei o data");
 	    						showExcel();
 	    							
 	    					}
@@ -585,33 +589,35 @@ import org.apache.poi.xssf.usermodel.*;
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						
-						JFrame frame3 = new JFrame("Edit Rules");
-						frame3.setSize(800, 500);
-						frame3.setLocation(100, 100);
-						frame3.setLayout(new FlowLayout());
-						frame3.setVisible(true);
-						
-						
-						
-						JPanel panel= new JPanel();
-						
-	    				frame3.add(panel, BorderLayout.NORTH);
-	    				
-	    				frame3.setLayout(new FlowLayout());
-	    				
-						JLabel name= new JLabel("Name");
-						JLabel metric=new JLabel("Metric");
-						JLabel operator= new JLabel("Operator");
-						JLabel number= new JLabel("Number");
-						
-						
-						
-						
-					    panel.add(name);
-					    panel.add(metric);
-					    panel.add(operator);
-					    panel.add(number);
-						// TODO Auto-generated method stub
+						 JFrame frame = new JFrame("Show Rules");
+					     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+					     DefaultTableModel dm = new DefaultTableModel();
+					     dm.setDataVector(new Object[][]{{"Delete", "","","",""},
+					                    {"Delete", "","","",""}}, new Object[]{"","Name", "Metric", "Operator", "Number"});
+
+					     
+					     for (int i = 0; i < regras.size(); i++) {
+					    	 
+					    	 Regra auxiliar = regras.get(i);
+					    	// Object[] toAdd = 
+					    	 
+					    	// dm.addRow(rowData);
+					     }
+					     JTable table = new JTable(dm);
+					     table.getColumn("").setCellRenderer(new ButtonRenderer());
+					     table.getColumn("").setCellEditor(new ButtonEditor(new JCheckBox()));
+
+
+					     JScrollPane scroll = new JScrollPane(table);
+
+					     table.setPreferredScrollableViewportSize(table.getPreferredSize());
+					     table.getColumnModel().getColumn(0).setPreferredWidth(100);
+
+					     
+					     frame.add(scroll);
+					     frame.pack();
+					     frame.setVisible(true);
 						
 					}
 					
@@ -628,6 +634,7 @@ import org.apache.poi.xssf.usermodel.*;
 				    "(((0[xX](\\p{XDigit}+)(\\.)?)|(0[xX](\\p{XDigit}+)?(\\.)(\\p{XDigit}+)))" +
 				    "[pP][+-]?(\\p{Digit}+)))[fFdD]?))[\\x00-\\x20]*");
 
+			
 			public static boolean isFloat(String s){
 				    
 				return DOUBLE_PATTERN.matcher(s).matches();
