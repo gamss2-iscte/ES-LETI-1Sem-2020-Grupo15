@@ -10,6 +10,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Vector;
 import java.util.regex.Pattern;
 
 import javax.swing.*;
@@ -47,6 +48,7 @@ import org.apache.poi.xssf.usermodel.*;
 				frame.setVisible(true);
 			}
 			
+			
  			public int numberOfColumns(Sheet sheet) {
 				
 				int numberOfCells = 0;
@@ -60,7 +62,8 @@ import org.apache.poi.xssf.usermodel.*;
 				return numberOfCells;
 			}
 
-			public void importarExcel(String path) throws InvalidFormatException, IOException {
+			
+ 			public void importarExcel(String path) throws InvalidFormatException, IOException {
 				
 				Workbook workbook = WorkbookFactory.create(new File(path));
 				Sheet sheet = workbook.getSheetAt(0);
@@ -95,7 +98,8 @@ import org.apache.poi.xssf.usermodel.*;
 				}
 			}
 			
-			public void showExcel() {
+			
+ 			public void showExcel() {
 				
 				Object[] linha = new Object[columnNames2.length];
 				int auxiliar=-1;
@@ -112,7 +116,8 @@ import org.apache.poi.xssf.usermodel.*;
 				
 			}
 
-			public void clearTable() {
+			
+ 			public void clearTable() {
 				
 				
 				int rowCount = model.getRowCount();
@@ -123,7 +128,8 @@ import org.apache.poi.xssf.usermodel.*;
 				
 			}
 			
-			public void removeFromData(int a, int referencia) {
+			
+ 			public void removeFromData(int a, int referencia) {
 				
 				if (a == 4) { //LOC
 					
@@ -141,7 +147,8 @@ import org.apache.poi.xssf.usermodel.*;
 				}
 			}
 					
-			public void addToData(ArrayList<String> objetivo, ArrayList<String> original, int g) {
+			
+ 			public void addToData(ArrayList<String> objetivo, ArrayList<String> original, int g) {
 				
 				objetivo.add(original.get(g));
 				objetivo.add(original.get(g + 1));
@@ -158,15 +165,26 @@ import org.apache.poi.xssf.usermodel.*;
 				
 			}
 				
-			public void updateData(ArrayList<Regra> regras) {
+			
+ 			public void updateData(ArrayList<Regra> regras) {
 				
 				clearTable();
 				
 				ArrayList<String> data2 = new ArrayList<String>();
-				//System.out.println("Vou dar update");
 				System.out.println("Neste momento existem " + regras.size() + " regras");
 				
-				//System.out.println("########## " + data2.size());
+				
+				if(regras.isEmpty()) {
+					System.out.println("TESTE TESTE TESTE");
+					try {
+						data.clear();
+						importarExcel(path);
+						data2=data;
+					} catch (InvalidFormatException | IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 				
 				for(int i = 0; i < regras.size(); i++) {
 					
@@ -359,7 +377,64 @@ import org.apache.poi.xssf.usermodel.*;
 			
 			}
 		
-			public void addContent() throws InvalidFormatException, IOException {
+ 			
+			public void updateData2(int valor) {
+				
+				clearTable();
+				ArrayList<String> data2 = new ArrayList<String>();
+				
+				if(valor == 1) { //iPlasma
+					
+					data2.clear();
+					
+					for(int g = 0; g < data.size(); g+=columnNames2.length) {
+						
+						if(data.get(g+9).equals("true")) {
+							
+							addToData(data2, data, g);
+						}
+					}
+					
+					data = data2;
+				}
+				
+				if(valor == 2) { //PMD
+					
+					data2.clear();
+					
+					for(int g = 0; g < data.size(); g+=columnNames2.length) {
+						
+						if(data.get(g+10).equals("true")) {
+							
+							addToData(data2, data, g);
+						}
+					}
+					
+					data = data2;
+					
+				}
+			}
+			
+			
+ 			public void resetExcel() {
+ 				
+ 				data.clear();
+				
+				while (model.getRowCount()>0) {
+		             model.removeRow(0);
+				}
+				
+				try {
+					importarExcel(path);
+				} catch (InvalidFormatException | IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+ 			}
+ 			
+ 			
+ 			public void addContent() throws InvalidFormatException, IOException {
 				
 				frame.setSize(1400, 700);
 				frame.setLocation(100, 100);
@@ -392,7 +467,7 @@ import org.apache.poi.xssf.usermodel.*;
 				JPanel hi = new JPanel();
 				frame.add(hi, BorderLayout.SOUTH);
 				hi.setLayout(new FlowLayout());
-				JButton verExcel = new JButton("Show Excel");
+				JButton verExcel = new JButton("Show Excel based on rules");
 				JButton definirRegra = new JButton("Create Rule");
 				JButton escolherRegra = new JButton("Choose Rule");
 				JButton exit = new JButton ("Exit");
@@ -400,6 +475,7 @@ import org.apache.poi.xssf.usermodel.*;
 				JButton deleteRule = new JButton("Delete Rule");
 				JButton resetExcel = new JButton("Reset Excel");
 				JButton dataSize = new JButton("Data Size");
+				JButton deleteRules = new JButton("Delete all Rules");
 				
 				hi.add(verExcel);
 				hi.add(definirRegra);
@@ -407,7 +483,8 @@ import org.apache.poi.xssf.usermodel.*;
 				hi.add(showRules);
 				hi.add(resetExcel);
 				hi.add(dataSize);
-				hi.add(deleteRule);
+				//hi.add(deleteRule);
+				hi.add(deleteRules);
 				hi.add(exit);
 				
 				
@@ -441,6 +518,7 @@ import org.apache.poi.xssf.usermodel.*;
 					public void actionPerformed(ActionEvent e) {
 						
 						clearTable();
+						updateData(regras);
 						showExcel();
 							
 					}
@@ -601,47 +679,106 @@ import org.apache.poi.xssf.usermodel.*;
                    
 					@Override
                     public void actionPerformed(ActionEvent e) {
-
-
-                        frame3 = new JFrame("Choose Rule");
+                       
+						frame3 = new JFrame("Choose Rule");
                         frame3.setSize(1000, 700);
                         frame3.setLocation(100, 100);
                         frame3.setLayout(new BorderLayout());
                         frame3.setVisible(true);
-
-
-
+                       
                         JPanel buttonPane= new JPanel();
                         JPanel fieldsPanel= new JPanel();
-                        JLabel rule=new JLabel("Rule");
-                        JLabel ruleNumber= new JLabel("Rule Number");
-
-
+                        JPanel newP= new JPanel();
+                        JLabel rule=new JLabel("Existing Filter");
+                        JLabel ruleNumber= new JLabel("Created Rule ");
+                        
                         String [] options= {"Choose an option", "iPlasma", "PMD"};
-                        JComboBox cb= new JComboBox(options);
-
-
-                        JTextField text = new JTextField("");
-
-                        JButton s= new JButton("OK");
+                        final JComboBox cb= new JComboBox(options);
+                       
+                        ArrayList<String> auxiliar= new ArrayList<String>();
+                        auxiliar.add("Choose an option");
+                        
+                        for(int i = 0; i < regras.size(); i++) {
+                        	Regra auxi = regras.get(i);
+                        	
+                        	String aux = String.valueOf(i) + ": " + auxi.getMetrica() + " " + auxi.getOperator() + " " + String.valueOf(auxi.getDouble());
+                        	auxiliar.add(aux);
+                        	
+                        }
+                        
+                        final JComboBox<String> cb2 = new JComboBox<String>(new Vector<String>(auxiliar));
+                        
                         JButton s2= new JButton("Cancel");
-
-                        fieldsPanel.setLayout(new BoxLayout(fieldsPanel, BoxLayout.PAGE_AXIS));
+                        JButton ok1= new JButton("OK");
+                        JButton ok2= new JButton("OK");
+                        
+                        fieldsPanel.setLayout(new FlowLayout());
                         buttonPane.setLayout(new FlowLayout());
-
                         fieldsPanel.add(rule);
                         fieldsPanel.add(cb);
-                        fieldsPanel.add(ruleNumber);
-                        fieldsPanel.add(text);
-                        buttonPane.add(s);
+                        fieldsPanel.add(ok1);
+                        newP.add(ruleNumber);
+                        newP.add(cb2);
+                        newP.add(ok2);
                         buttonPane.add(s2);
-
-                        frame3.add(fieldsPanel, BorderLayout.PAGE_START);
+                        frame3.add(fieldsPanel, BorderLayout.NORTH);
+                        frame3.add(newP, BorderLayout.CENTER);
                         frame3.add(buttonPane, BorderLayout.PAGE_END);
                         frame3.pack();
                         frame3.setVisible(true);
-                     }
+                        
+                        //Press OK normal Rule
+                        ok1.addActionListener(new ActionListener() {
+							
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								
+								int selected = cb.getSelectedIndex();
+								
+								System.out.println("Selected: " + selected);
+								//iPlasma or PMD
+								if(selected == 1 || selected == 2) {
+									
+									System.out.println("Selected: " + selected);
+									updateData2(selected);
+									
+								}
+								showExcel();
+								frame3.dispose();
+							}
+						});
+                        
+                        
+                        //Press OK rule user created
+                        ok2.addActionListener(new ActionListener() {
+							
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								
+								int selected = cb2.getSelectedIndex();
+								System.out.println("Selected: " + selected);
+								Regra aux = regras.get(selected - 1);
+								ArrayList<Regra> auxi= new ArrayList<Regra>();
+								auxi.clear();
+								auxi.add(aux);
+								resetExcel();
+								updateData(auxi);
+								showExcel();
+								frame3.dispose();
+								
+							}
+						});
+                        
+                        s2.addActionListener(new ActionListener() {
+							
+							@Override
+							public void actionPerformed(ActionEvent e) {
 
+								frame3.dispose();
+								
+							}
+						});
+                    }
                 });
 
 				
@@ -660,7 +797,7 @@ import org.apache.poi.xssf.usermodel.*;
 	                      JPanel fieldsPanel= new JPanel();
 	                      JLabel ruleNumber= new JLabel("Rule Number");
 
-	                      JTextField text = new JTextField("");
+	                      //JTextField text = new JTextField("");
 
 	                      JButton s = new JButton("Delete");
 
@@ -676,6 +813,22 @@ import org.apache.poi.xssf.usermodel.*;
 	                      frameTeste.add(buttonPane, BorderLayout.PAGE_END);
 	                      frameTeste.pack();
 	                      frameTeste.setVisible(true);
+	                      
+	                   
+	                      s.addActionListener(new ActionListener() {
+							
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								
+								int toDelete = Integer.parseInt(text.getText());
+								regras.remove(toDelete);
+								updateData(regras);
+								resetExcel();
+								showExcel();
+								frameTeste.dispose();
+								
+							}
+						});
 						
 						
 					}
@@ -689,19 +842,7 @@ import org.apache.poi.xssf.usermodel.*;
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						
-						data.clear();
-						
-						while (model.getRowCount()>0) {
-				             model.removeRow(0);
-						}
-						
-						try {
-							importarExcel(path);
-						} catch (InvalidFormatException | IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-						
+						resetExcel();
 						showExcel();
 						
 					}
@@ -720,7 +861,22 @@ import org.apache.poi.xssf.usermodel.*;
 					
 					
 				});
-			}
+			
+				
+				deleteRules.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						
+						regras.clear();
+						data.clear();
+						updateData(regras);
+						showExcel();
+						
+					}
+				});
+ 			
+ 			}
 			
 			
 			private static final Pattern DOUBLE_PATTERN = Pattern.compile(
