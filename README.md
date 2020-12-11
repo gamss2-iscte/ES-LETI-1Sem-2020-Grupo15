@@ -4,7 +4,7 @@ O objetivo deste projeto é desenvolver uma aplicação em Java que permita ao u
 
 ## Instalar
 
-Para o nosso código é necessário instalar o [Excel] (https://e-learning.iscte-iul.pt/bbcswebdav/pid-111513-dt-content-rid-857362_1/xid-857362_1).
+Para o nosso código é necessário instalar o [Excel](https://e-learning.iscte-iul.pt/bbcswebdav/pid-111513-dt-content-rid-857362_1/xid-857362_1).
 
 ## Perspetiva da Interface Principal
 
