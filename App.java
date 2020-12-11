@@ -29,6 +29,7 @@ import org.apache.poi.xssf.usermodel.*;
 			private JFrame frame;
 			private JFrame frame2;
 			private JFrame frame3;
+			private JFrame frame4;
 			private JFrame frameTeste;
 			private JLabel erro;
 			private JDialog erroDialog;
@@ -43,6 +44,7 @@ import org.apache.poi.xssf.usermodel.*;
 				frame = new JFrame ("Excel Reader");
 				addContent();
 			}
+			
 			
 			public void open() {
 				frame.setVisible(true);
@@ -434,6 +436,96 @@ import org.apache.poi.xssf.usermodel.*;
  			}
  			
  			
+ 			public int[] contadores(int selecionado){
+ 				
+ 				int[] resposta = new int[4];
+ 				
+ 				int DCI_0 = 0;
+ 				int DII_1 = 0;
+ 				int ADCI_2 = 0;
+ 				int ADII_3 = 0;
+ 				
+ 				//iPlasma
+ 				if (selecionado == 1) {
+ 					
+ 					for(int g = 0; g < data.size(); g+=columnNames2.length) {
+						
+						if(data.get(g+9).equals("true")) { //iPlasma = true
+							
+							//System.out.println("entrei");
+							
+							if(data.get(g+8).equals("true")) { //is_long_method = true
+								
+								DCI_0++;
+								
+							}
+							if(data.get(g+8).equals("false")) { //is_long_method = false
+								
+								DII_1++;
+							} 	
+						}
+						if(data.get(g+9).equals("false")) { //iPlasma = false
+							
+							if(data.get(g+8).equals("true")) { //is_long_method = true
+								
+								ADII_3++;
+								
+							}
+							if(data.get(g+8).equals("false")) { //is_long_method = false
+								
+								ADCI_2++;
+							} 	
+						}
+					}	
+ 				}
+ 				
+ 				//PMD
+ 				if (selecionado == 2) {
+ 					
+ 					for(int g = 0; g < data.size(); g+=columnNames2.length) {
+						
+						if(data.get(g+10).equals("true")) { //PMD = true
+							
+							if(data.get(g+8).equals("true")) { //is_long_method = true
+								
+								DCI_0++;
+								
+							}
+							if(data.get(g+8).equals("false")) { //is_long_method = false
+								
+								DII_1++;
+							} 	
+						}
+						if(data.get(g+10).equals("false")) { //PMD = false
+							
+							if(data.get(g+8).equals("true")) { //is_long_method = true
+								
+								ADII_3++;
+								
+							}
+							if(data.get(g+8).equals("false")) { //is_long_method = false
+								
+								ADCI_2++;
+							} 	
+						}
+					}	
+ 				}
+ 				
+ 				
+ 				//rules user created
+ 				if (selecionado > 2) {
+ 					
+ 				}
+ 				
+ 				resposta[0] = DCI_0;
+ 				resposta[1] = DII_1;
+ 				resposta[2] = ADCI_2;
+ 				resposta[3] = ADII_3;
+ 				
+ 				return resposta;
+ 			}
+ 			
+ 			
  			public void addContent() throws InvalidFormatException, IOException {
 				
 				frame.setSize(1400, 700);
@@ -468,7 +560,7 @@ import org.apache.poi.xssf.usermodel.*;
 				frame.add(hi, BorderLayout.SOUTH);
 				hi.setLayout(new FlowLayout());
 				JButton verExcel = new JButton("Show Excel based on rules");
-				JButton definirRegra = new JButton("Create Rule");
+				JButton definirRegra = new JButton("Add Rule");
 				JButton escolherRegra = new JButton("Detect Code Smells");
 				JButton exit = new JButton ("Exit");
 				JButton showRules = new JButton("Existing Rules");
@@ -476,15 +568,21 @@ import org.apache.poi.xssf.usermodel.*;
 				JButton resetExcel = new JButton("Reset Excel");
 				JButton dataSize = new JButton("Data Size");
 				JButton deleteRules = new JButton("Delete all Rules");
+				JButton evaluateQuality = new JButton("Evaluate Quality");
+				
 				
 				hi.add(verExcel);
-				hi.add(definirRegra);
-				hi.add(escolherRegra);	
-				hi.add(showRules);
 				hi.add(resetExcel);
+				
+				hi.add(definirRegra);
+				hi.add(deleteRules);
+				
+				hi.add(escolherRegra);	
+				hi.add(evaluateQuality);
+				
+				hi.add(showRules);
 				hi.add(dataSize);
 				//hi.add(deleteRule);
-				hi.add(deleteRules);
 				hi.add(exit);
 				
 				
@@ -680,7 +778,7 @@ import org.apache.poi.xssf.usermodel.*;
 					@Override
                     public void actionPerformed(ActionEvent e) {
                        
-						frame3 = new JFrame("Choose Rule");
+						frame3 = new JFrame("Detect Code Smells");
                         frame3.setSize(1000, 700);
                         frame3.setLocation(100, 100);
                         frame3.setLayout(new BorderLayout());
@@ -737,11 +835,11 @@ import org.apache.poi.xssf.usermodel.*;
 								
 								int selected = cb.getSelectedIndex();
 								
-								System.out.println("Selected: " + selected);
+								//System.out.println("Selected: " + selected);
 								//iPlasma or PMD
 								if(selected == 1 || selected == 2) {
 									
-									System.out.println("Selected: " + selected);
+									//System.out.println("Selected: " + selected);
 									updateData2(selected);
 									
 								}
@@ -758,7 +856,7 @@ import org.apache.poi.xssf.usermodel.*;
 							public void actionPerformed(ActionEvent e) {
 								
 								int selected = cb2.getSelectedIndex();
-								System.out.println("Selected: " + selected);
+								//System.out.println("Selected: " + selected);
 								Regra aux = regras.get(selected - 1);
 								ArrayList<Regra> auxi= new ArrayList<Regra>();
 								auxi.clear();
@@ -878,6 +976,96 @@ import org.apache.poi.xssf.usermodel.*;
 					}
 				});
  			
+				
+				evaluateQuality.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						
+						frame4 = new JFrame("Evaluate Quality");
+                        frame4.setSize(1000, 700);
+                        frame4.setLocation(100, 100);
+                        frame4.setLayout(new BorderLayout());
+                        frame4.setVisible(true);
+                        
+                        JPanel buttonPane= new JPanel();
+                        JPanel fieldsPanel= new JPanel();
+                        JPanel results= new JPanel();
+                        JLabel filterOrRule=new JLabel("Filter or Rule");
+                        JLabel note = new JLabel("Remember to Reset Excel before choosing the filter or rule");
+                        
+                        JLabel DCI = new JLabel("DCI: ");
+                        JLabel DII = new JLabel("DII: ");
+                        JLabel ADCI = new JLabel("ADCI: ");
+                        JLabel ADII = new JLabel("ADII: ");
+                        
+                        ArrayList<String> auxiliar= new ArrayList<String>();
+                        
+                        auxiliar.add("Choose an option");
+                        auxiliar.add("iPlasma");
+                        auxiliar.add("PMD");
+                        
+                        for(int i = 0; i < regras.size(); i++) {
+                        	Regra auxi = regras.get(i);
+                        	
+                        	String aux = String.valueOf(i) + ": " + auxi.getMetrica() + " " + auxi.getOperator() + " " + String.valueOf(auxi.getDouble());
+                        	auxiliar.add(aux);	
+                        }
+                        
+                        final JComboBox<String> cb = new JComboBox<String>(new Vector<String>(auxiliar));
+						
+                        JButton cancel= new JButton("Cancel");
+                        JButton ok= new JButton("OK");
+                        
+                        fieldsPanel.setLayout(new FlowLayout());
+                        results.setLayout(new BoxLayout(results, BoxLayout.PAGE_AXIS));
+                        buttonPane.setLayout(new FlowLayout());
+                        fieldsPanel.add(filterOrRule);
+                        fieldsPanel.add(cb);
+                        fieldsPanel.add(ok);
+                        
+                        buttonPane.add(note);
+                        buttonPane.add(cancel);
+                        
+                        results.add(DCI);
+                        results.add(DII);
+                        results.add(ADCI);
+                        results.add(ADII);
+                        
+                        frame4.add(fieldsPanel, BorderLayout.NORTH);
+                        frame4.add(results, BorderLayout.CENTER);
+                        frame4.add(buttonPane, BorderLayout.PAGE_END);
+                        frame4.pack();
+                        frame4.setVisible(true);
+                        
+                        
+                        cancel.addActionListener(new ActionListener() {
+							
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								
+								frame4.dispose();
+								
+							}
+						});
+                        
+                        ok.addActionListener(new ActionListener() {
+							
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								
+								int[] resultados = contadores(cb.getSelectedIndex());
+								
+								System.out.println("DCI: " + resultados[0]);
+								System.out.println("DII: " + resultados[1]);
+								System.out.println("ADCI: " + resultados[2]);
+								System.out.println("ADII: " + resultados[3]);
+								
+								frame4.dispose();
+							}
+						});
+					}
+				});
  			}
 			
 			
