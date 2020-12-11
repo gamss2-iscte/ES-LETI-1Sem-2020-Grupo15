@@ -4,11 +4,14 @@ O objetivo deste projeto é desenvolver uma aplicação em Java que permita ao u
 
 # Instalar
 
-Usar o [Excel] (https://e-learning.iscte-iul.pt/bbcswebdav/pid-111513-dt-content-rid-857362_1/xid-857362_1)
+Para o nosso código é necessário instalar o [Excel] (https://e-learning.iscte-iul.pt/bbcswebdav/pid-111513-dt-content-rid-857362_1/xid-857362_1).
 
-# Membros
+# Perspetiva da Interface Principal
+
+![WhatsApp Image 2020-12-11 at 01 42 50](https://user-images.githubusercontent.com/73655499/101851439-753a2000-3b53-11eb-800e-3b089513265a.jpeg)
+
+# Membros do grupo
 88737 David Fonseca -
 87807 Ecaterina Grusetcaia -
 87665 Gonçalo Santos -
-88888 Tiago Barbosa 
-
+87568 Tiago Barbosa
