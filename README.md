@@ -6,9 +6,13 @@ O objetivo deste projeto é desenvolver uma aplicação em Java que permita ao u
 
 Para o nosso código funcionar é necessário instalar o [Excel](https://e-learning.iscte-iul.pt/bbcswebdav/pid-111513-dt-content-rid-857362_1/xid-857362_1).
 
-## Perspetiva da Interface Principal
+## Perspetiva da Interface Principal quando é aberta
 
-![WhatsApp Image 2020-12-11 at 01 42 50](https://user-images.githubusercontent.com/73655499/101851439-753a2000-3b53-11eb-800e-3b089513265a.jpeg)
+![Imagem2](https://user-images.githubusercontent.com/73655499/101992631-bbef5d80-3cac-11eb-9204-0de4cb188738.jpeg)
+
+## Perspetiva da Interface Principa com o Excel é aberta
+
+![Imagem1](https://user-images.githubusercontent.com/73655499/101992619-a7ab6080-3cac-11eb-8c33-e3f6e726c9f9.jpeg)
 
 ## Funcionalidades não implementadas
 
