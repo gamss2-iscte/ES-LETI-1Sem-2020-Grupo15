@@ -17,7 +17,8 @@ Temos todas as funcionalidades implementadas e a funcionar.
 De momento falta só criar o JavaDoc e ter 75% de cobertura dos teste unitários.
 
 ## Membros do grupo
-88737 David Fonseca -
-87807 Ecaterina Grusetcaia -
-87665 Gonçalo Santos -
-87568 Tiago Barbosa
+
+  88737. David Fonseca 
+  87807. Ecaterina Grusetcaia 
+  87665. Gonçalo Santos 
+  87568. Tiago Barbosa
