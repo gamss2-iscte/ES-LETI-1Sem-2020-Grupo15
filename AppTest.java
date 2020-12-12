@@ -10,7 +10,7 @@ import junit.framework.*;
 public class AppTest extends TestCase{
 	
 	
-	private App app = new App();
+	private App app = new App(1);
    
 	/**
      * Create the test case
@@ -41,7 +41,7 @@ public class AppTest extends TestCase{
     
     public void testRead() throws InvalidFormatException, IOException {
     	
-    	app.isFloat("goncalo");
+    //	app.isFloat("goncalo");
     	app.importarExcel("/Users/goncalosantos/Downloads/Defeitos.xlsx");
     	app.showExcel();
     	

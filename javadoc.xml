@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc access="public" author="true" classpath="target/test-classes:/Users/goncalosantos/.m2/repository/org/apache/poi/poi-ooxml/3.9/poi-ooxml-3.9.jar:/Users/goncalosantos/.m2/repository/org/apache/poi/poi/3.9/poi-3.9.jar:/Users/goncalosantos/.m2/repository/org/apache/poi/poi-ooxml-schemas/3.9/poi-ooxml-schemas-3.9.jar:/Users/goncalosantos/.m2/repository/org/apache/xmlbeans/xmlbeans/2.3.0/xmlbeans-2.3.0.jar:/Users/goncalosantos/.m2/repository/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar:/Users/goncalosantos/.m2/repository/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar:/Users/goncalosantos/.m2/repository/junit/junit/3.8.1/junit-3.8.1.jar:/Users/goncalosantos/.m2/repository/commons-codec/commons-codec/1.5/commons-codec-1.5.jar:/Users/goncalosantos/.m2/repository/stax/stax-api/1.0.1/stax-api-1.0.1.jar" destdir="/Users/goncalosantos/Documents" doctitle="Java FTP Client Utility API" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.7" sourcefiles="src/main/java/project/software/Regra.java,src/main/java/project/software/App.java" sourcepath="src/main/java:src/test/java" splitindex="true" use="true" version="true"/>
+    </target>
+</project>

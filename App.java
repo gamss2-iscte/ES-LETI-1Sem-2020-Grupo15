@@ -17,6 +17,9 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 
 	
+	/**
+	 * @author goncalosantos, ecaterina
+	 */
 	public class App {
 			
 			private JFrame frame_principal;
@@ -27,7 +30,7 @@ import org.apache.poi.ss.usermodel.*;
 			private JFrame frame_deleteRule;
 			private JLabel erro;
 			private JDialog erroDialog;
-			private static final String path = "/Users/goncalosantos/Downloads/Defeitos.xlsx";
+			private String path = "/Users/goncalosantos/Downloads/Defeitos.xlsx";
 			private DefaultTableModel model;
 			private ArrayList<Regra> regras = new ArrayList<Regra>();
 			private String[] columnNames;
@@ -35,8 +38,23 @@ import org.apache.poi.ss.usermodel.*;
 			private JTextField text = new JTextField("");
 			private DefaultListModel<String> lista_modelo;
 			
+			private static final Pattern DOUBLE_PATTERN = Pattern.compile(
+				    "[\\x00-\\x20]*[+-]?(NaN|Infinity|((((\\p{Digit}+)(\\.)?((\\p{Digit}+)?)" +
+				    "([eE][+-]?(\\p{Digit}+))?)|(\\.((\\p{Digit}+))([eE][+-]?(\\p{Digit}+))?)|" +
+				    "(((0[xX](\\p{XDigit}+)(\\.)?)|(0[xX](\\p{XDigit}+)?(\\.)(\\p{XDigit}+)))" +
+				    "[pP][+-]?(\\p{Digit}+)))[fFdD]?))[\\x00-\\x20]*");
+
 			
-			public App()  {
+			/**
+			 * Constructor for the "App" class
+			 * @param x: "0" if need an fileChooser or another value if not
+			 */
+			public App(int x)  {
+				
+				if(x == 0) {
+					fileChooser();
+				}
+				
 				frame_principal = new JFrame ("Excel Reader");
 				try {
 					addContent();
@@ -54,13 +72,37 @@ import org.apache.poi.ss.usermodel.*;
 			 * This method is used only to set the visibility of the main frame true
 			 */
 			public void open() {
+				
 				frame_principal.setVisible(true);
+				
 			}
 			
 			
- 			/**
+			/**
+			 * This method is used to open an FileChooser when necessary
+			 */
+			public void fileChooser() {
+				
+				JFileChooser fileChooser = new JFileChooser();
+		        fileChooser.setDialogTitle("Open the file"); //name for chooser
+		        fileChooser.setAcceptAllFileFilterUsed(false); //to show or not all other files
+		        fileChooser.setSelectedFile(new File(path)); //when you want to show the name of file into the chooser
+		        fileChooser.setVisible(true);
+		        int result = fileChooser.showOpenDialog(fileChooser);
+		        if (result == JFileChooser.APPROVE_OPTION) {
+		            path = fileChooser.getSelectedFile().getAbsolutePath();
+		        } else {
+		            return;
+		        }
+
+				
+			}
+ 			
+			
+			/**
+ 			 * Returns an int that indicate the number of define cells (cells that have values) of the top row in a sheet
  			 * @param sheet from excel
- 			 * @return number of cells in a sheet
+ 			 * @return int with the number of columns in a sheet
  			 */
  			public int numberOfColumns(Sheet sheet) {
 				
@@ -77,11 +119,11 @@ import org.apache.poi.ss.usermodel.*;
 
 			
  			/**
+ 			 * This method is used to add data to the attribute "data". 
+ 			 * This attribute will be very important in the future
  			 * @param path of the file
  			 * @throws InvalidFormatException
  			 * @throws IOException
- 			 * This method is used to add data to the attribute "data". 
- 			 * This attribute will be very important in the future
  			 */
  			public void importarExcel(String path) throws InvalidFormatException, IOException {
 				
@@ -136,6 +178,9 @@ import org.apache.poi.ss.usermodel.*;
 			}
 
 			
+ 			/**
+ 			 * This method is used to clear the table from the UI
+ 			 */
  			public void clearTable() {
 				
 				
@@ -148,6 +193,12 @@ import org.apache.poi.ss.usermodel.*;
 			}
 			
 		
+ 			/**
+ 			 * This method adds 12 Strings from an ArrayList to another ArrayList
+ 			 * @param objetivo: the final ArrayList (to add to)
+ 			 * @param original: the first ArrayList (to copy from)
+ 			 * @param g: an int to determinate from where (from the original ArrayList) to copy
+ 			 */
  			public void addToData(ArrayList<String> objetivo, ArrayList<String> original, int g) {
 				
 				objetivo.add(original.get(g));
@@ -166,6 +217,10 @@ import org.apache.poi.ss.usermodel.*;
 			}
 				
 			
+ 			/**
+ 			 * This method is used to, given an ArrayList of "Regras", update the attribute "data"
+ 			 * @param regras: ArrayList of "Regras"
+ 			 */
  			public void updateData(ArrayList<Regra> regras) {
 				
 				clearTable();
@@ -360,6 +415,10 @@ import org.apache.poi.ss.usermodel.*;
 			}
 		
  			
+			/**
+			 * This method is only use to update the attribute data when Detecting Code Smells
+			 * @param valor: only "1" or "2" to determinate if it is "iPlasma" or "PMD", respectively
+			 */
 			public void updateData2(int valor) {
 				
 				clearTable();
@@ -398,6 +457,10 @@ import org.apache.poi.ss.usermodel.*;
 			}
 			
 			
+ 			/**
+ 			 * This method is used to clear the attribute data and reset the Excel on the UI
+ 			 * 
+ 			 */
  			public void resetExcel() {
  				
  				data.clear();
@@ -416,6 +479,11 @@ import org.apache.poi.ss.usermodel.*;
  			}
  			
  			
+ 			/**
+ 			 * Returns an int[] with the results of the 4 counters, DCI, DII, ADCI, ADII (on this specific order).
+ 			 * @param selecionado: "1" or "2" if the user choose iPlasma or PMD, respectively. "3" or more to indicate the rule the user choose
+ 			 * @return int[4]: DCI, DII, ADCI, ADII
+ 			 */
  			public int[] contadores(int selecionado){
  				
  				int[] resposta = new int[4];
@@ -538,21 +606,37 @@ import org.apache.poi.ss.usermodel.*;
  			}
  			
  			
+ 			/**
+ 			 * This method receives an "Regra" as an argument and adds it to the ArrayList "regras"
+ 			 * @param a: "Regra" to add on "regras"
+ 			 */
  			public void addRule(Regra a) {
  				regras.add(a);
  			}
  			
  			
+ 			/**
+ 			 * This methods deletes all the rules added it so far to the ArrayList "regras"
+ 			 */
  			public void clearAllRules() {
  				regras.clear();
  			}
  			
  			
+ 			/**
+ 			 * This method returns the argument ArrayList "regras"
+ 			 * @return ArrayList "regras"
+ 			 */
  			public ArrayList<Regra> getRegras() {
 				return regras;
 			}
 
 
+			/**
+			 * This method adds all the content to the main frame ()
+			 * @throws InvalidFormatException
+			 * @throws IOException
+			 */
 			public void addContent() throws InvalidFormatException, IOException {
 				
 				frame_principal.setSize(1400, 700);
@@ -569,7 +653,7 @@ import org.apache.poi.ss.usermodel.*;
 				
 				
 				//Tabela Excel
-				importarExcel(App.path);
+				importarExcel(path);
 				JScrollPane scroll;
 				model = new DefaultTableModel();
 				model.setColumnIdentifiers(columnNames);
@@ -676,12 +760,12 @@ import org.apache.poi.ss.usermodel.*;
 						JLabel number= new JLabel("Number");
 						
 						//First ComboBox - Métrica
-						String [] options= {"Chosse an option", "LOC", "CYCLO", "ATFD", "LAA"};
+						String [] options= {"Choose an option", "LOC", "CYCLO", "ATFD", "LAA"};
 						cb= new JComboBox<String>(options);
 						
 						
 						//Second ComboBox - Operador
-						String [] options2= {"Chosse an option", ">", "<", "="};
+						String [] options2= {"Choose an option", ">", "<", "="};
 						cb2= new JComboBox<String>(options2);
 						
 						
@@ -716,37 +800,41 @@ import org.apache.poi.ss.usermodel.*;
 	    					public void actionPerformed(ActionEvent e) {
 	    						
 	    						//check metrica
-	    						if(cb.getSelectedItem().equals("Chosse an option") ) {
+	    						if(cb.getSelectedItem().equals("Choose an option") ) {
 	    							
 	    							erro.setText("Verifique a métrica seleccionada");
 	    							erroDialog.setVisible(true);
+	    							frame_setRule.dispose();
+	    							return;
 	    							
 	    						}else {
-	    							//System.out.println((String)cb.getSelectedItem().toString());
+	    						
 	    							regra.setMetrica((String)cb.getSelectedItem().toString());
 	    						}
 	    						
 	    						//check operator
-	    						if(cb2.getSelectedItem().equals("Chosse an option")) {
+	    						if(cb2.getSelectedItem().equals("Choose an option")) {
 	    							
 	    							erro.setText("Verifique o operador seleccionado");
 	    							erroDialog.setVisible(true);
+	    							frame_setRule.dispose();
+	    							return;
 	    							
 	    						}else {
 	    							regra.setOperator((String)cb2.getSelectedItem().toString());
 	    						}
 	    						
 	    						//check numero
-//	    							if(isFloat(numero)==false){
-//	    								erro.setText("Verifique o numero escrito");
-//	    								erroDialog.setVisible(true);
-//	    							}else {
-//	    								System.out.println(numero);
-	    								//numero = text.getText();
+	    							if(isFloat(text.getText())==false){
+	    								erro.setText("Verifique o numero escrito");
+	    								erroDialog.setVisible(true);
+	    								frame_setRule.dispose();
+	    								return;
+	    							}else {
 	    								double doub = Integer.parseInt(text.getText());
 	    								regra.setDouble(doub);
 	    							
-	    					//		}
+	    							}
 	    						
 	    						regras.add(regra);
 	    						updateData(regras);
@@ -1119,13 +1207,12 @@ import org.apache.poi.ss.usermodel.*;
  			}
 			
 			
-			private static final Pattern DOUBLE_PATTERN = Pattern.compile(
-				    "[\\x00-\\x20]*[+-]?(NaN|Infinity|((((\\p{Digit}+)(\\.)?((\\p{Digit}+)?)" +
-				    "([eE][+-]?(\\p{Digit}+))?)|(\\.((\\p{Digit}+))([eE][+-]?(\\p{Digit}+))?)|" +
-				    "(((0[xX](\\p{XDigit}+)(\\.)?)|(0[xX](\\p{XDigit}+)?(\\.)(\\p{XDigit}+)))" +
-				    "[pP][+-]?(\\p{Digit}+)))[fFdD]?))[\\x00-\\x20]*");
-
 			
+			/**
+			 * This method is used to check if the input of the user is an number
+			 * @param s: String to be evaluated
+			 * @return: "true" if it is an number, "false" if it is not an number
+			 */
 			public static boolean isFloat(String s){
 				    
 				return DOUBLE_PATTERN.matcher(s).matches();
@@ -1133,8 +1220,10 @@ import org.apache.poi.ss.usermodel.*;
 			
 
 			public static void main(String[] args) throws InvalidFormatException, IOException{
-				App g = new App();
+				
+				App g = new App(0);
 				g.open();
+				
 			}
 		}
 
