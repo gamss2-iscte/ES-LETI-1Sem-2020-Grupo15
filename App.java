@@ -8,24 +8,17 @@ package project.software;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Vector;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.xml.stream.events.Comment;
-
+import javax.swing.table.*;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.formula.functions.Column;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.*;
-	    
+
 	
-	public class App 
-	{
+	public class App {
+			
 			private JFrame frame_principal;
 			private JFrame frame_setRule;
 			private JFrame frame_codeSmells;
@@ -37,28 +30,42 @@ import org.apache.poi.xssf.usermodel.*;
 			private static final String path = "/Users/goncalosantos/Downloads/Defeitos.xlsx";
 			private DefaultTableModel model;
 			private ArrayList<Regra> regras = new ArrayList<Regra>();
-			private String[] columnNames2;
+			private String[] columnNames;
 			private ArrayList<String> data = new ArrayList<String>();
 			private JTextField text = new JTextField("");
-			
 			private DefaultListModel<String> lista_modelo;
 			
 			
-			public App() throws InvalidFormatException, IOException {
+			public App()  {
 				frame_principal = new JFrame ("Excel Reader");
-				addContent();
+				try {
+					addContent();
+				} catch (InvalidFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			
 			
+			/**
+			 * This method is used only to set the visibility of the main frame true
+			 */
 			public void open() {
 				frame_principal.setVisible(true);
 			}
 			
 			
+ 			/**
+ 			 * @param sheet from excel
+ 			 * @return number of cells in a sheet
+ 			 */
  			public int numberOfColumns(Sheet sheet) {
 				
 				int numberOfCells = 0;
-				Iterator rowIterator = sheet.rowIterator();
+				Iterator<Row> rowIterator = sheet.rowIterator();
 				if (rowIterator.hasNext()){
 					
 					Row headerRow = (Row) rowIterator.next();
@@ -69,17 +76,20 @@ import org.apache.poi.xssf.usermodel.*;
 			}
 
 			
+ 			/**
+ 			 * @param path of the file
+ 			 * @throws InvalidFormatException
+ 			 * @throws IOException
+ 			 * This method is used to add data to the attribute "data". 
+ 			 * This attribute will be very important in the future
+ 			 */
  			public void importarExcel(String path) throws InvalidFormatException, IOException {
 				
 				Workbook workbook = WorkbookFactory.create(new File(path));
 				Sheet sheet = workbook.getSheetAt(0);
 				DataFormatter dataFormatter = new DataFormatter();
-				
-                
-             //   ArrayList<String> columnNames = new ArrayList<String>();
-                
-               columnNames2 = new String[numberOfColumns(sheet)];
-            //    String[][] data2 = new String[numberOfCells][sheet.getLastRowNum()];
+
+                columnNames = new String[numberOfColumns(sheet)];
 										
                 int linha = -1;
                 int coluna = -1;
@@ -91,31 +101,34 @@ import org.apache.poi.xssf.usermodel.*;
 			        	 
 						String cellValue = dataFormatter.formatCellValue(cell);
 
-							if(linha == 0) { //é a primera linha
-						//		columnNames.add(cellValue);
-								columnNames2[coluna] = cellValue;
+							if(linha == 0) { //first line
+						
+								columnNames[coluna] = cellValue;
 			          
 							}else {
 								data.add(cellValue);
-								//data2[linha][coluna] = cellValue;
-			        		   
+								
 							}
 			        }
 				}
 			}
 			
 			
+ 			/**
+ 			 * This method is used to add data from the attribute "data" to the attribute "model" (DefaultTableMode).
+ 			 * With this we can show the excel in the UI.
+ 			 */
  			public void showExcel() {
 				
-				Object[] linha = new Object[columnNames2.length];
+				Object[] linha = new Object[columnNames.length];
 				int auxiliar=-1;
 				
-				for(int w = 0; w < data.size(); w+=columnNames2.length) {
+				for(int w = 0; w < data.size(); w+=columnNames.length) {
 					
 					auxiliar++;
-					for (int i = 0; i < columnNames2.length; i++) {
+					for (int i = 0; i < columnNames.length; i++) {
 					
-						linha[i]=data.get(i+(auxiliar*columnNames2.length));
+						linha[i]=data.get(i+(auxiliar*columnNames.length));
 					}
 					model.addRow(linha);
 				}
@@ -134,26 +147,7 @@ import org.apache.poi.xssf.usermodel.*;
 				
 			}
 			
-			
- 			public void removeFromData(int a, int referencia) {
-				
-				if (a == 4) { //LOC
-					
-					data.remove(referencia - 4);
-					data.remove(referencia - 3);
-					data.remove(referencia - 2);
-					data.remove(referencia - 1);
-					data.remove(referencia);
-					data.remove(referencia + 1);
-					data.remove(referencia + 2);
-					data.remove(referencia + 3);
-					data.remove(referencia + 5);
-					data.remove(referencia + 6);
-					data.remove(referencia + 7);
-				}
-			}
-					
-			
+		
  			public void addToData(ArrayList<String> objetivo, ArrayList<String> original, int g) {
 				
 				objetivo.add(original.get(g));
@@ -181,7 +175,7 @@ import org.apache.poi.xssf.usermodel.*;
 				
 				
 				if(regras.isEmpty()) {
-				//	System.out.println("TESTE TESTE TESTE");
+				
 					try {
 						data.clear();
 						importarExcel(path);
@@ -198,31 +192,23 @@ import org.apache.poi.xssf.usermodel.*;
 					String metrica = aux.getMetrica().toString();
 					String operator = aux.getOperator().toString();
 					data2.clear();
-					//System.out.println("#########"+aux.getDouble());
 					
 					if(metrica.equals("LOC")) {  //metric is LOC
 						
 							if(operator.equals("<")) { //operator is <
 							
-								for(int g = 0; g < data.size(); g+=columnNames2.length) {
+								for(int g = 0; g < data.size(); g+=columnNames.length) {
 								
-									//System.out.println("Célula do Excel: " + data.get(g+4));
-									
 									if(Integer.parseInt(data.get(g+4)) < aux.getDouble()) {
 										
-										//System.out.println("cheguei");
 										addToData(data2, data, g);		
-										//data2.add
-										//removeFromData(4, g+4);
-										//data.set(g+4, "eliminado");
-										
 									}
 								}
 							}
 							
 							if (operator.equals(">")) { //operator is >
 								
-								for(int g = 0; g < data.size(); g+=columnNames2.length) {
+								for(int g = 0; g < data.size(); g+=columnNames.length) {
 									
 									if(Integer.parseInt(data.get(g+4)) > aux.getDouble()) {
 										
@@ -233,7 +219,7 @@ import org.apache.poi.xssf.usermodel.*;
 							}
 							if (operator.equals("=")) { //operator is =
 								
-								for(int g = 0; g < data.size(); g+=columnNames2.length) {
+								for(int g = 0; g < data.size(); g+=columnNames.length) {
 									
 									if(Integer.parseInt(data.get(g+4)) == aux.getDouble()) {
 										
@@ -242,7 +228,6 @@ import org.apache.poi.xssf.usermodel.*;
 									}
 								}
 							}
-					//	this.data = data2;
 					}
 					
 					
@@ -252,7 +237,7 @@ import org.apache.poi.xssf.usermodel.*;
 
 							if(operator.equals("<")) { //operator is <
 							
-								for(int g = 0; g < data.size(); g+=columnNames2.length) {
+								for(int g = 0; g < data.size(); g+=columnNames.length) {
 								
 									if(Integer.parseInt(data.get(g+5)) < aux.getDouble()) {
 										
@@ -264,7 +249,7 @@ import org.apache.poi.xssf.usermodel.*;
 							
 							if (operator.equals(">")) { //operator is >
 								
-								for(int g = 0; g < data.size(); g+=columnNames2.length) {
+								for(int g = 0; g < data.size(); g+=columnNames.length) {
 									
 									if(Integer.parseInt(data.get(g+5)) > aux.getDouble()) {
 										
@@ -275,7 +260,7 @@ import org.apache.poi.xssf.usermodel.*;
 							}
 							if (operator.equals("=")) { //operator is =
 								
-								for(int g = 0; g < data.size(); g+=columnNames2.length) {
+								for(int g = 0; g < data.size(); g+=columnNames.length) {
 									
 									if(Integer.parseInt(data.get(g+5)) == aux.getDouble()) {
 										
@@ -284,7 +269,6 @@ import org.apache.poi.xssf.usermodel.*;
 									}
 								}
 							}
-					//	this.data = data2;
 					}
 					
 					
@@ -295,7 +279,7 @@ import org.apache.poi.xssf.usermodel.*;
 
 						if(operator.equals("<")) { //operator is <
 						
-							for(int g = 0; g < data.size(); g+=columnNames2.length) {
+							for(int g = 0; g < data.size(); g+=columnNames.length) {
 								
 								if(Integer.parseInt(data.get(g+6)) < aux.getDouble()) {
 									
@@ -307,7 +291,7 @@ import org.apache.poi.xssf.usermodel.*;
 						
 						if (operator.equals(">")) { //operator is >
 							
-							for(int g = 0; g < data.size(); g+=columnNames2.length) {
+							for(int g = 0; g < data.size(); g+=columnNames.length) {
 								
 								if(Integer.parseInt(data.get(g+6)) > aux.getDouble()) {
 									
@@ -318,7 +302,7 @@ import org.apache.poi.xssf.usermodel.*;
 						}
 						if (operator.equals("=")) { //operator is =
 							
-							for(int g = 0; g < data.size(); g+=columnNames2.length) {
+							for(int g = 0; g < data.size(); g+=columnNames.length) {
 								
 								if(Integer.parseInt(data.get(g+6)) == aux.getDouble()) {
 									
@@ -327,7 +311,6 @@ import org.apache.poi.xssf.usermodel.*;
 								}
 							}
 						}
-						//this.data = data2;
 					}
 					
 					
@@ -337,7 +320,7 @@ import org.apache.poi.xssf.usermodel.*;
 						
 						if(operator.equals("<")) { //operator is <
 							
-							for(int g = 0; g < data.size(); g+=columnNames2.length) {
+							for(int g = 0; g < data.size(); g+=columnNames.length) {
 								
 								if((int) Math.round(Double.parseDouble(data.get(g+7))) < aux.getDouble()) {
 									
@@ -349,7 +332,7 @@ import org.apache.poi.xssf.usermodel.*;
 						
 						if (operator.equals(">")) { //operator is >
 							
-							for(int g = 0; g < data.size(); g+=columnNames2.length) {
+							for(int g = 0; g < data.size(); g+=columnNames.length) {
 								
 								if((int) Math.round(Double.parseDouble(data.get(g+7))) > aux.getDouble()) {
 									
@@ -360,7 +343,7 @@ import org.apache.poi.xssf.usermodel.*;
 						}
 						if (operator.equals("=")) { //operator is =
 							
-							for(int g = 0; g < data.size(); g+=columnNames2.length) {
+							for(int g = 0; g < data.size(); g+=columnNames.length) {
 								
 								if( (int) Math.round (Double.parseDouble(data.get(g+7)) ) == aux.getDouble()) {
 							
@@ -369,18 +352,11 @@ import org.apache.poi.xssf.usermodel.*;
 								}
 							}
 						}
-						//this.data = data2;
 					}
-					
-					
-				//	data=data2;
 				}
 				
 				data=data2;
 				System.out.println("Tamanho do data: " + data.size() / 12 + " linhas");
-				//System.out.println("Tamanho do data2: " + data2.size() / 12 + " linhas");
-				//data2.clear();
-			
 			}
 		
  			
@@ -393,7 +369,7 @@ import org.apache.poi.xssf.usermodel.*;
 					
 					data2.clear();
 					
-					for(int g = 0; g < data.size(); g+=columnNames2.length) {
+					for(int g = 0; g < data.size(); g+=columnNames.length) {
 						
 						if(data.get(g+9).equals("true")) {
 							
@@ -408,7 +384,7 @@ import org.apache.poi.xssf.usermodel.*;
 					
 					data2.clear();
 					
-					for(int g = 0; g < data.size(); g+=columnNames2.length) {
+					for(int g = 0; g < data.size(); g+=columnNames.length) {
 						
 						if(data.get(g+10).equals("true")) {
 							
@@ -452,11 +428,9 @@ import org.apache.poi.xssf.usermodel.*;
  				//iPlasma
  				if (selecionado == 1) {
  					
- 					for(int g = 0; g < data.size(); g+=columnNames2.length) {
+ 					for(int g = 0; g < data.size(); g+=columnNames.length) {
 						
 						if(data.get(g+9).equals("true")) { //iPlasma = true
-							
-							//System.out.println("entrei");
 							
 							if(data.get(g+8).equals("true")) { //is_long_method = true
 								
@@ -486,7 +460,7 @@ import org.apache.poi.xssf.usermodel.*;
  				//PMD
  				if (selecionado == 2) {
  					
- 					for(int g = 0; g < data.size(); g+=columnNames2.length) {
+ 					for(int g = 0; g < data.size(); g+=columnNames.length) {
 						
 						if(data.get(g+10).equals("true")) { //PMD = true
 							
@@ -523,7 +497,7 @@ import org.apache.poi.xssf.usermodel.*;
  					
  					if(aux.getMetrica().equals("LOC") || aux.getMetrica().equals("CYCLO")) {
  						
- 						for(int g = 0; g < data.size(); g+=columnNames2.length) {
+ 						for(int g = 0; g < data.size(); g+=columnNames.length) {
  							
  							if(data.get(g+8).equals("true")) { //is_long_method = true
  	 							
@@ -539,7 +513,7 @@ import org.apache.poi.xssf.usermodel.*;
  					
  					if(aux.getMetrica().equals("ATFD") || aux.getMetrica().equals("LAA")) {
  						
- 						for(int g = 0; g < data.size(); g+=columnNames2.length) {
+ 						for(int g = 0; g < data.size(); g+=columnNames.length) {
  							
  							if(data.get(g+11).equals("true")) { //is_feature_envy = true
  	 							
@@ -564,7 +538,22 @@ import org.apache.poi.xssf.usermodel.*;
  			}
  			
  			
- 			public void addContent() throws InvalidFormatException, IOException {
+ 			public void addRule(Regra a) {
+ 				regras.add(a);
+ 			}
+ 			
+ 			
+ 			public void clearAllRules() {
+ 				regras.clear();
+ 			}
+ 			
+ 			
+ 			public ArrayList<Regra> getRegras() {
+				return regras;
+			}
+
+
+			public void addContent() throws InvalidFormatException, IOException {
 				
 				frame_principal.setSize(1400, 700);
 				frame_principal.setLocation(100, 100);
@@ -580,10 +569,10 @@ import org.apache.poi.xssf.usermodel.*;
 				
 				
 				//Tabela Excel
-				importarExcel(this.path);
+				importarExcel(App.path);
 				JScrollPane scroll;
 				model = new DefaultTableModel();
-				model.setColumnIdentifiers(columnNames2);
+				model.setColumnIdentifiers(columnNames);
 				JTable excel = new JTable();
 				excel.setModel(model);
 				scroll = new JScrollPane(excel);
@@ -613,15 +602,15 @@ import org.apache.poi.xssf.usermodel.*;
 				hi.add(resetExcel);
 				
 				hi.add(definirRegra);
-				hi.add(deleteRules);
+				hi.add(deleteRules); //client didn't asked
+				hi.add(deleteRule); //client didn't asked
 				
 				hi.add(escolherRegra);	
 				hi.add(evaluateQuality);
 				
-				hi.add(showRules);
-				hi.add(dataSize);
-				hi.add(deleteRule);
-				hi.add(exit);
+				hi.add(showRules); //client didn't asked
+				hi.add(dataSize); //client didn't asked
+				hi.add(exit); //client didn't asked
 				
 				
 				
@@ -669,9 +658,9 @@ import org.apache.poi.xssf.usermodel.*;
 						
 						final Regra regra = new Regra();
 						
-						final JComboBox cb;
-						final JComboBox cb2;
-						final String numero;
+						final JComboBox<String> cb;
+						final JComboBox<String> cb2;
+					//	final String numero;
 						
 						
 						frame_setRule= new JFrame("Set a Rule");
@@ -688,12 +677,12 @@ import org.apache.poi.xssf.usermodel.*;
 						
 						//First ComboBox - Métrica
 						String [] options= {"Chosse an option", "LOC", "CYCLO", "ATFD", "LAA"};
-						cb= new JComboBox(options);
+						cb= new JComboBox<String>(options);
 						
 						
 						//Second ComboBox - Operador
 						String [] options2= {"Chosse an option", ">", "<", "="};
-						cb2= new JComboBox(options2);
+						cb2= new JComboBox<String>(options2);
 						
 						
 						//Botão Normal
@@ -817,7 +806,7 @@ import org.apache.poi.xssf.usermodel.*;
                         JLabel note = new JLabel("Remember to Reset Excel before choosing the filter or rule");
                         
                         String [] options= {"Choose an option", "iPlasma", "PMD"};
-                        final JComboBox cb= new JComboBox(options);
+                        final JComboBox<String> cb= new JComboBox<String>(options);
                        
                         ArrayList<String> auxiliar= new ArrayList<String>();
                         auxiliar.add("Choose an option");
@@ -960,11 +949,12 @@ import org.apache.poi.xssf.usermodel.*;
 							public void actionPerformed(ActionEvent e) {
 								
 								int toDelete = ruleNumber.getSelectedIndex() - 1;
-								System.out.println(toDelete);
-								regras.remove(toDelete);
-								updateData(regras);
-								showExcel();
-								frame_deleteRule.dispose();
+								if(toDelete != -1  || toDelete != 0) {
+									regras.remove(toDelete);
+									updateData(regras);
+									showExcel();
+									frame_deleteRule.dispose();
+								}
 								
 							}
 						 });
@@ -1019,7 +1009,7 @@ import org.apache.poi.xssf.usermodel.*;
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						
-						regras.clear();
+						clearAllRules();
 						data.clear();
 						updateData(regras);
 						showExcel();

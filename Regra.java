@@ -9,6 +9,12 @@ public class Regra {
 	
 	public Regra() {}
 	
+	public Regra(String metrica, String operator, Double x) {
+		this.metrica=metrica;
+		this.operator=operator;
+		this.x=x;
+		
+	}
 	public void setMetrica(String a) {
 			
 			this.metrica=a;
