@@ -4,10 +4,10 @@ The objective of this project is to develop a Java application that allows the u
 
 ## Group Members
 
-  88737. David Fonseca
-  87807. Ecaterina Grusetcaia 
-  87665. Gonçalo Santos 
-  87568. Tiago Barbosa
+88737. David Fonseca
+87807. Ecaterina Grusetcaia 
+87665. Gonçalo Santos 
+87568. Tiago Barbosa
   
 ### Install
 
@@ -24,3 +24,19 @@ For our code to work it is necessary to install this [Excel](https://e-learning.
 ### Functions not implemented
 
 All features are implemented and working, we even added some extra features.
+
+### Code Smells Report
+
+God Class.
+![God Class](https://user-images.githubusercontent.com/73655499/101993538-65d1e880-3cb3-11eb-8e71-423714bdae41.jpeg)
+
+Long Method.
+![Long Method](https://user-images.githubusercontent.com/73655499/101993554-76825e80-3cb3-11eb-93f4-19c76df9a7cb.jpeg)
+
+Type Checking.
+![Type Checking](https://user-images.githubusercontent.com/73655499/101993556-800bc680-3cb3-11eb-8edb-aaa147023421.jpeg)
+
+Feature Envy.
+![Feature Envy](https://user-images.githubusercontent.com/73655499/101993566-8b5ef200-3cb3-11eb-844c-17b62c400dc6.jpeg)
+
+We didn't have any code smells in our project's code
