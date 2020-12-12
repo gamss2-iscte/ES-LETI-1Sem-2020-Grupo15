@@ -1,6 +1,6 @@
 # ES-LETI-1Sem-2020-Grupo15
 
-The objective of this project is to develop a Java application that allows the user to evaluate the quality (number of correct answers and errors in the classification of defects) of certain tools (iPlasma, PMD and rules created by the user) in the detection of design defects in software, from the data provided in the assignement and in an Excel file.
+The goal of this project is to develop a Java application that allows the user to evaluate the quality (number of correct answers and errors in the classification of defects) of certain tools (iPlasma, PMD and rules created by the user) in the detection of design defects in software, from the data provided in the assignement and in an Excel file.
 
 ## Group Members
 
@@ -11,7 +11,7 @@ The objective of this project is to develop a Java application that allows the u
   
 ### Requirements:
 
-- For our code to work it is necessary to install this [Excel](https://e-learning.iscte-iul.pt/bbcswebdav/pid-111513-dt-content-rid-857362_1/xid-857362_1).
+- For our code to work it is necessary to download this [Excel File](https://e-learning.iscte-iul.pt/bbcswebdav/pid-111513-dt-content-rid-857362_1/xid-857362_1).
 - It's necessary to also install both [EclEmma](https://www.eclemma.org/installation.html) and [JDeodorant](https://marketplace.eclipse.org/content/jdeodorant).
 - Don´t forget to add the dependencies to your pom.xml!
 
@@ -35,11 +35,11 @@ The objective of this project is to develop a Java application that allows the u
  
  ### Advice in order to start using our project
 
-The constructor of the App class has an int type argument. This argument is used to simplify the FileChooser meaning that when the filechooser is necessary, the value ‘0’ is passed otherwise the value ‘1’ is used.
+- The constructor of the App class has an int type argument. This argument is used to simplify the FileChooser meaning that when the filechooser is necessary, the value ‘0’ is passed otherwise the value ‘1’ is used.
  
 ### Functions not implemented
 
-- All features are implemented and working, we even added some extra features. 
+- All features are implemented and working, we even added some extra features, for example, deleting all rules, deleting a specific rule and show all rules.
 - The unitary tests have a converage of about 98% of the classes but we couldn't cover the java files itself.
 
 ### Perspective of the main interface when opened
