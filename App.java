@@ -26,12 +26,12 @@ import org.apache.poi.xssf.usermodel.*;
 	
 	public class App 
 	{
-			private JFrame frame;
-			private JFrame frame2;
-			private JFrame frame3;
-			private JFrame frame4;
-			private JFrame resultados_frame;
-			private JFrame frameTeste;
+			private JFrame frame_principal;
+			private JFrame frame_setRule;
+			private JFrame frame_codeSmells;
+			private JFrame frame_evaluteQuality;
+			private JFrame frame_resultados;
+			private JFrame frame_deleteRule;
 			private JLabel erro;
 			private JDialog erroDialog;
 			private static final String path = "/Users/goncalosantos/Downloads/Defeitos.xlsx";
@@ -43,14 +43,15 @@ import org.apache.poi.xssf.usermodel.*;
 			
 			private DefaultListModel<String> lista_modelo;
 			
+			
 			public App() throws InvalidFormatException, IOException {
-				frame = new JFrame ("Excel Reader");
+				frame_principal = new JFrame ("Excel Reader");
 				addContent();
 			}
 			
 			
 			public void open() {
-				frame.setVisible(true);
+				frame_principal.setVisible(true);
 			}
 			
 			
@@ -565,12 +566,12 @@ import org.apache.poi.xssf.usermodel.*;
  			
  			public void addContent() throws InvalidFormatException, IOException {
 				
-				frame.setSize(1400, 700);
-				frame.setLocation(100, 100);
-				frame.setLayout(new BorderLayout());
-				frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+				frame_principal.setSize(1400, 700);
+				frame_principal.setLocation(100, 100);
+				frame_principal.setLayout(new BorderLayout());
+				frame_principal.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 				
-				erroDialog = new JDialog(frame, "Erro");
+				erroDialog = new JDialog(frame_principal, "Erro");
 				erro = new JLabel();
 				erroDialog.add(erro);
 				erroDialog.setLocation(600 - 175, 450 - 50);
@@ -588,13 +589,13 @@ import org.apache.poi.xssf.usermodel.*;
 				scroll = new JScrollPane(excel);
 				
 				
-				frame.add(scroll);
+				frame_principal.add(scroll);
 				scroll.setBounds(20,20,300,300);
 				
 				
 				//Painel Sul
 				JPanel hi = new JPanel();
-				frame.add(hi, BorderLayout.SOUTH);
+				frame_principal.add(hi, BorderLayout.SOUTH);
 				hi.setLayout(new FlowLayout());
 				JButton verExcel = new JButton("Show Excel based on rules");
 				JButton definirRegra = new JButton("Add Rule");
@@ -619,7 +620,7 @@ import org.apache.poi.xssf.usermodel.*;
 				
 				hi.add(showRules);
 				hi.add(dataSize);
-				//hi.add(deleteRule);
+				hi.add(deleteRule);
 				hi.add(exit);
 				
 				
@@ -673,13 +674,11 @@ import org.apache.poi.xssf.usermodel.*;
 						final String numero;
 						
 						
-						frame2= new JFrame("Set a Rule");
-						frame2.setSize(800, 500);
-						frame2.setLocation(100, 100);
-						frame2.setLayout(new BorderLayout());
-						frame2.setVisible(true);
-						// TODO Auto-generated method stub
-						
+						frame_setRule= new JFrame("Set a Rule");
+						frame_setRule.setSize(800, 500);
+						frame_setRule.setLocation(100, 100);
+						frame_setRule.setLayout(new BorderLayout());
+						frame_setRule.setVisible(true);
 
 						JPanel buttonPane= new JPanel();
 						JPanel fieldsPanel= new JPanel();
@@ -690,20 +689,11 @@ import org.apache.poi.xssf.usermodel.*;
 						//First ComboBox - Métrica
 						String [] options= {"Chosse an option", "LOC", "CYCLO", "ATFD", "LAA"};
 						cb= new JComboBox(options);
-						//regra.setMetrica((String)cb.getSelectedItem());
-						
 						
 						
 						//Second ComboBox - Operador
 						String [] options2= {"Chosse an option", ">", "<", "="};
 						cb2= new JComboBox(options2);
-						//regra.setOperator((String)cb2.getSelectedItem());
-						
-						
-						//JTextField - Numero
-						//JTextField text = new JTextField("");
-						
-						//regra.setOperator(numero);
 						
 						
 						//Botão Normal
@@ -725,10 +715,10 @@ import org.apache.poi.xssf.usermodel.*;
 						buttonPane.add(s2);
 						
 						
-						frame2.add(fieldsPanel, BorderLayout.PAGE_START);
-						frame2.add(buttonPane, BorderLayout.PAGE_END);
-						frame2.pack();
-						frame2.setVisible(true);
+						frame_setRule.add(fieldsPanel, BorderLayout.PAGE_START);
+						frame_setRule.add(buttonPane, BorderLayout.PAGE_END);
+						frame_setRule.pack();
+						frame_setRule.setVisible(true);
 						
 						//Carregar no OK do DEFINE RULE
 						s.addActionListener(new ActionListener(){
@@ -770,11 +760,9 @@ import org.apache.poi.xssf.usermodel.*;
 	    					//		}
 	    						
 	    						regras.add(regra);
-	    						//System.out.println("Adicionei uma regra");
 	    						updateData(regras);
-	    						//System.out.println("Atualizei o data");
 	    						showExcel();
-	    						frame2.dispose();
+	    						frame_setRule.dispose();
 	    							
 	    					}
 	    					
@@ -784,8 +772,8 @@ import org.apache.poi.xssf.usermodel.*;
 	    					
 	    					@Override
 	    					public void actionPerformed(ActionEvent e) {
-	    					//	frame2.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-	    						frame2.dispose();
+	    						
+	    						frame_setRule.dispose();
 	    						
 	    					}
 	    					
@@ -803,7 +791,7 @@ import org.apache.poi.xssf.usermodel.*;
 						
 						//clearTable();
 						//frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-						frame.dispose();
+						frame_principal.dispose();
 						
 					}
 					
@@ -815,11 +803,11 @@ import org.apache.poi.xssf.usermodel.*;
 					@Override
                     public void actionPerformed(ActionEvent e) {
                        
-						frame3 = new JFrame("Detect Code Smells");
-                        frame3.setSize(1000, 700);
-                        frame3.setLocation(100, 100);
-                        frame3.setLayout(new BorderLayout());
-                        frame3.setVisible(true);
+						frame_codeSmells = new JFrame("Detect Code Smells");
+						frame_codeSmells.setSize(1000, 700);
+						frame_codeSmells.setLocation(100, 100);
+						frame_codeSmells.setLayout(new BorderLayout());
+						frame_codeSmells.setVisible(true);
                        
                         JPanel buttonPane= new JPanel();
                         JPanel fieldsPanel= new JPanel();
@@ -858,11 +846,11 @@ import org.apache.poi.xssf.usermodel.*;
                         newP.add(ok2);
                         buttonPane.add(note);
                         buttonPane.add(s2);
-                        frame3.add(fieldsPanel, BorderLayout.NORTH);
-                        frame3.add(newP, BorderLayout.CENTER);
-                        frame3.add(buttonPane, BorderLayout.PAGE_END);
-                        frame3.pack();
-                        frame3.setVisible(true);
+                        frame_codeSmells.add(fieldsPanel, BorderLayout.NORTH);
+                        frame_codeSmells.add(newP, BorderLayout.CENTER);
+                        frame_codeSmells.add(buttonPane, BorderLayout.PAGE_END);
+                        frame_codeSmells.pack();
+                        frame_codeSmells.setVisible(true);
                         
                         //Press OK normal Rule
                         ok1.addActionListener(new ActionListener() {
@@ -872,16 +860,14 @@ import org.apache.poi.xssf.usermodel.*;
 								
 								int selected = cb.getSelectedIndex();
 								
-								//System.out.println("Selected: " + selected);
 								//iPlasma or PMD
 								if(selected == 1 || selected == 2) {
 									
-									//System.out.println("Selected: " + selected);
 									updateData2(selected);
 									
 								}
 								showExcel();
-								frame3.dispose();
+								frame_codeSmells.dispose();
 							}
 						});
                         
@@ -901,7 +887,7 @@ import org.apache.poi.xssf.usermodel.*;
 								resetExcel();
 								updateData(auxi);
 								showExcel();
-								frame3.dispose();
+								frame_codeSmells.dispose();
 								
 							}
 						});
@@ -911,7 +897,7 @@ import org.apache.poi.xssf.usermodel.*;
 							@Override
 							public void actionPerformed(ActionEvent e) {
 
-								frame3.dispose();
+								frame_codeSmells.dispose();
 								
 							}
 						});
@@ -924,32 +910,48 @@ import org.apache.poi.xssf.usermodel.*;
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						
-						  frameTeste= new JFrame("TESTE");
-	                      frameTeste.setSize(800, 700);
-	                      frameTeste.setLocation(100, 100);
-	                      frameTeste.setLayout(new BorderLayout());
-	                      frameTeste.setVisible(true);
+						  frame_deleteRule= new JFrame("Delete Rule");
+						  frame_deleteRule.setSize(800, 700);
+						  frame_deleteRule.setLocation(100, 100);
+						  frame_deleteRule.setLayout(new BorderLayout());
+						  frame_deleteRule.setVisible(true);
 
 	                      JPanel buttonPane= new JPanel();
 	                      JPanel fieldsPanel= new JPanel();
-	                      JLabel ruleNumber= new JLabel("Rule Number");
+	                      
+
+	                      ArrayList<String> auxiliar= new ArrayList<String>();
+	                        
+	                      auxiliar.add("Choose an option");
+	                        
+	                        for(int i = 0; i < regras.size(); i++) {
+	                        	
+	                        	Regra auxi = regras.get(i);
+	                        	
+	                        	String aux = String.valueOf(i) + ": " + auxi.getMetrica() + " " + auxi.getOperator() + " " + String.valueOf(auxi.getDouble());
+	                        	auxiliar.add(aux);
+	                        	
+	                        }
+	                        
+	                      final JComboBox<String> ruleNumber = new JComboBox<String>(new Vector<String>(auxiliar));
 
 	                      //JTextField text = new JTextField("");
 
 	                      JButton s = new JButton("Delete");
+	                      JButton cancel = new JButton("Cancel");
 
 
 	                      fieldsPanel.setLayout(new BoxLayout(fieldsPanel, BoxLayout.PAGE_AXIS));
 	                      buttonPane.setLayout(new FlowLayout());
 
 	                      fieldsPanel.add(ruleNumber);
-	                      fieldsPanel.add(text);
 	                      buttonPane.add(s);
+	                      buttonPane.add(cancel);
 	
-	                      frameTeste.add(fieldsPanel, BorderLayout.PAGE_START);
-	                      frameTeste.add(buttonPane, BorderLayout.PAGE_END);
-	                      frameTeste.pack();
-	                      frameTeste.setVisible(true);
+	                      frame_deleteRule.add(fieldsPanel, BorderLayout.PAGE_START);
+	                      frame_deleteRule.add(buttonPane, BorderLayout.PAGE_END);
+	                      frame_deleteRule.pack();
+	                      frame_deleteRule.setVisible(true);
 	                      
 	                   
 	                      s.addActionListener(new ActionListener() {
@@ -957,15 +959,27 @@ import org.apache.poi.xssf.usermodel.*;
 							@Override
 							public void actionPerformed(ActionEvent e) {
 								
-								int toDelete = Integer.parseInt(text.getText());
+								int toDelete = ruleNumber.getSelectedIndex() - 1;
+								System.out.println(toDelete);
 								regras.remove(toDelete);
 								updateData(regras);
-								resetExcel();
 								showExcel();
-								frameTeste.dispose();
+								frame_deleteRule.dispose();
+								
+							}
+						 });
+	                      
+	                      cancel.addActionListener(new ActionListener() {
+							
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								
+								frame_deleteRule.dispose();
 								
 							}
 						});
+	                      
+	                      
 						
 						
 					}
@@ -1019,16 +1033,16 @@ import org.apache.poi.xssf.usermodel.*;
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						
-						frame4 = new JFrame("Evaluate Quality");
-                        frame4.setSize(1000, 700);
-                        frame4.setLocation(100, 100);
-                        frame4.setLayout(new BorderLayout());
-                        frame4.setVisible(true);
+						frame_evaluteQuality = new JFrame("Evaluate Quality");
+						frame_evaluteQuality.setSize(1000, 700);
+						frame_evaluteQuality.setLocation(100, 100);
+						frame_evaluteQuality.setLayout(new BorderLayout());
+						frame_evaluteQuality.setVisible(true);
                         
-                        resultados_frame = new JFrame("Evaluate Quality");
-                        resultados_frame.setSize(200, 200);
-                        resultados_frame.setLocation(100, 100);
-                        resultados_frame.setLayout(new FlowLayout());
+						frame_resultados = new JFrame("Evaluate Quality");
+						frame_resultados.setSize(200, 200);
+						frame_resultados.setLocation(100, 100);
+						frame_resultados.setLayout(new FlowLayout());
                         
                         final JPanel principal = new JPanel();
                         principal.setLayout(new BorderLayout());
@@ -1070,10 +1084,10 @@ import org.apache.poi.xssf.usermodel.*;
                         buttonPane.add(cancel);
               
                         
-                        frame4.add(fieldsPanel, BorderLayout.NORTH);
-                        frame4.add(buttonPane, BorderLayout.PAGE_END);
-                        frame4.pack();
-                        frame4.setVisible(true);
+                        frame_evaluteQuality.add(fieldsPanel, BorderLayout.NORTH);
+                        frame_evaluteQuality.add(buttonPane, BorderLayout.PAGE_END);
+                        frame_evaluteQuality.pack();
+                        frame_evaluteQuality.setVisible(true);
                         
 
                         cancel.addActionListener(new ActionListener() {
@@ -1081,7 +1095,7 @@ import org.apache.poi.xssf.usermodel.*;
 							@Override
 							public void actionPerformed(ActionEvent e) {
 								
-								frame4.dispose();
+								frame_evaluteQuality.dispose();
 								
 							}
 						});
@@ -1103,16 +1117,11 @@ import org.apache.poi.xssf.usermodel.*;
 								JList<String> lista_resultados = new JList<String>(lista_modelo); 
 							
 								principal.add(lista_resultados);
-								resultados_frame.add(principal);
+								frame_resultados.add(principal);
 
-								frame4.dispose();
-								resultados_frame.setVisible(true);
-								
-							//	System.out.println("DCI: " + resultados[0]);
-							//	System.out.println("DII: " + resultados[1]);
-							//	System.out.println("ADCI: " + resultados[2]);
-							//	System.out.println("ADII: " + resultados[3]);
-
+								frame_evaluteQuality.dispose();
+								frame_resultados.setVisible(true);
+							
 							}
 						});
 					}
