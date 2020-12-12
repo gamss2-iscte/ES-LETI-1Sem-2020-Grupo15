@@ -4,7 +4,7 @@ O objetivo deste projeto é desenvolver uma aplicação em Java que permita ao u
 
 ## Instalar
 
-Para o nosso código é necessário instalar o [Excel](https://e-learning.iscte-iul.pt/bbcswebdav/pid-111513-dt-content-rid-857362_1/xid-857362_1).
+Para o nosso código funcionar é necessário instalar o [Excel](https://e-learning.iscte-iul.pt/bbcswebdav/pid-111513-dt-content-rid-857362_1/xid-857362_1).
 
 ## Perspetiva da Interface Principal
 
@@ -18,7 +18,7 @@ De momento falta só criar o JavaDoc e ter 75% de cobertura dos teste unitários
 
 ## Membros do grupo
 
-  88737. David Fonseca 
+  88737. David Fonseca
   87807. Ecaterina Grusetcaia 
   87665. Gonçalo Santos 
   87568. Tiago Barbosa
