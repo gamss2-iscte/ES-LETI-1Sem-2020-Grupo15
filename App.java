@@ -30,6 +30,7 @@ import org.apache.poi.xssf.usermodel.*;
 			private JFrame frame2;
 			private JFrame frame3;
 			private JFrame frame4;
+			private JFrame resultados_frame;
 			private JFrame frameTeste;
 			private JLabel erro;
 			private JDialog erroDialog;
@@ -39,6 +40,8 @@ import org.apache.poi.xssf.usermodel.*;
 			private String[] columnNames2;
 			private ArrayList<String> data = new ArrayList<String>();
 			private JTextField text = new JTextField("");
+			
+			private DefaultListModel<String> lista_modelo;
 			
 			public App() throws InvalidFormatException, IOException {
 				frame = new JFrame ("Excel Reader");
@@ -177,7 +180,7 @@ import org.apache.poi.xssf.usermodel.*;
 				
 				
 				if(regras.isEmpty()) {
-					System.out.println("TESTE TESTE TESTE");
+				//	System.out.println("TESTE TESTE TESTE");
 					try {
 						data.clear();
 						importarExcel(path);
@@ -514,6 +517,40 @@ import org.apache.poi.xssf.usermodel.*;
  				
  				//rules user created
  				if (selecionado > 2) {
+ 					
+ 					Regra aux = regras.get(selecionado - 3);
+ 					
+ 					if(aux.getMetrica().equals("LOC") || aux.getMetrica().equals("CYCLO")) {
+ 						
+ 						for(int g = 0; g < data.size(); g+=columnNames2.length) {
+ 							
+ 							if(data.get(g+8).equals("true")) { //is_long_method = true
+ 	 							
+ 								DCI_0++;
+ 	 						}
+ 							
+ 							if(data.get(g+8).equals("false")) {//is_long_method = false
+ 								
+ 								DII_1++;
+ 							}
+ 						}
+ 					}
+ 					
+ 					if(aux.getMetrica().equals("ATFD") || aux.getMetrica().equals("LAA")) {
+ 						
+ 						for(int g = 0; g < data.size(); g+=columnNames2.length) {
+ 							
+ 							if(data.get(g+11).equals("true")) { //is_feature_envy = true
+ 	 							
+ 								DCI_0++;
+ 	 						}
+ 							
+ 							if(data.get(g+8).equals("false")) {//is_feature_envy = false
+ 								
+ 								DII_1++;
+ 							}
+ 						}
+ 					}
  					
  				}
  				
@@ -988,17 +1025,22 @@ import org.apache.poi.xssf.usermodel.*;
                         frame4.setLayout(new BorderLayout());
                         frame4.setVisible(true);
                         
+                        resultados_frame = new JFrame("Evaluate Quality");
+                        resultados_frame.setSize(200, 200);
+                        resultados_frame.setLocation(100, 100);
+                        resultados_frame.setLayout(new FlowLayout());
+                        
+                        final JPanel principal = new JPanel();
+                        principal.setLayout(new BorderLayout());
+      
                         JPanel buttonPane= new JPanel();
                         JPanel fieldsPanel= new JPanel();
                         JPanel results= new JPanel();
                         JLabel filterOrRule=new JLabel("Filter or Rule");
                         JLabel note = new JLabel("Remember to Reset Excel before choosing the filter or rule");
-                        
-                        JLabel DCI = new JLabel("DCI: ");
-                        JLabel DII = new JLabel("DII: ");
-                        JLabel ADCI = new JLabel("ADCI: ");
-                        JLabel ADII = new JLabel("ADII: ");
-                        
+                      
+                        lista_modelo = new DefaultListModel<String>();
+
                         ArrayList<String> auxiliar= new ArrayList<String>();
                         
                         auxiliar.add("Choose an option");
@@ -1026,19 +1068,14 @@ import org.apache.poi.xssf.usermodel.*;
                         
                         buttonPane.add(note);
                         buttonPane.add(cancel);
-                        
-                        results.add(DCI);
-                        results.add(DII);
-                        results.add(ADCI);
-                        results.add(ADII);
+              
                         
                         frame4.add(fieldsPanel, BorderLayout.NORTH);
-                        frame4.add(results, BorderLayout.CENTER);
                         frame4.add(buttonPane, BorderLayout.PAGE_END);
                         frame4.pack();
                         frame4.setVisible(true);
                         
-                        
+
                         cancel.addActionListener(new ActionListener() {
 							
 							@Override
@@ -1056,12 +1093,26 @@ import org.apache.poi.xssf.usermodel.*;
 								
 								int[] resultados = contadores(cb.getSelectedIndex());
 								
-								System.out.println("DCI: " + resultados[0]);
-								System.out.println("DII: " + resultados[1]);
-								System.out.println("ADCI: " + resultados[2]);
-								System.out.println("ADII: " + resultados[3]);
+								lista_modelo.clear();
+								lista_modelo.addElement("Here are the results:");
+								lista_modelo.addElement("DCI: " + resultados[0]);
+								lista_modelo.addElement("DII: " + resultados[1]);
+								lista_modelo.addElement("ADCI: " + resultados[2]);
+								lista_modelo.addElement("ADII: " + resultados[3]);
 								
+								JList<String> lista_resultados = new JList<String>(lista_modelo); 
+							
+								principal.add(lista_resultados);
+								resultados_frame.add(principal);
+
 								frame4.dispose();
+								resultados_frame.setVisible(true);
+								
+							//	System.out.println("DCI: " + resultados[0]);
+							//	System.out.println("DII: " + resultados[1]);
+							//	System.out.println("ADCI: " + resultados[2]);
+							//	System.out.println("ADII: " + resultados[3]);
+
 							}
 						});
 					}
