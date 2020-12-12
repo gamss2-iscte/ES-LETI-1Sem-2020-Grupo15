@@ -10,7 +10,7 @@ Para o nosso código funcionar é necessário instalar o [Excel](https://e-learn
 
 ![Imagem2](https://user-images.githubusercontent.com/73655499/101992631-bbef5d80-3cac-11eb-9204-0de4cb188738.jpeg)
 
-## Perspetiva da Interface Principa com o Excel é aberta
+## Perspetiva da Interface Principa com o Excel aberto
 
 ![Imagem1](https://user-images.githubusercontent.com/73655499/101992619-a7ab6080-3cac-11eb-8c33-e3f6e726c9f9.jpeg)
 
